@@ -1,0 +1,2065 @@
+<!DOCTYPE html>
+<html lang="kk" class="h-full">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Жазира Ұстаз — Эссені Талдау және Бағалау Платформасы</title>
+  
+  <!-- Tailwind CSS арқылы заманауи және премиум дизайн -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Lucide белгішелер жинағы (Академиялық интерфейс үшін) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+  
+  <!-- Word құжаттарын (.docx) браузерде тікелей оқуға арналған Mammoth.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/mammoth/1.4.21/mammoth.browser.min.js"></script>
+
+  <!-- Анимациялар мен қаріптер баптауы -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <style>
+    body {
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+    .scrollbar-none::-webkit-scrollbar {
+      display: none;
+    }
+    .scrollbar-none {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    .animate-fade-in {
+      animation: fadeIn 0.3s ease-out forwards;
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-900 h-full flex flex-col antialiased">
+
+  <div class="mx-auto max-w-7xl w-full px-4 py-6 md:px-6 lg:px-8 flex-1 flex flex-col gap-6">
+    
+    <!-- Жоғарғы басты тақырыптық бренд-баннер -->
+    <header class="rounded-3xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div class="flex flex-col gap-5 lg:flex-row lg:items-center lg:justify-between">
+        <div class="flex items-start gap-4">
+          <div class="hidden sm:flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-indigo-500 via-violet-600 to-sky-600 text-white shadow-md">
+            <i data-lucide="brain" class="h-6 w-6 animate-pulse"></i>
+          </div>
+          <div>
+            <div class="mb-1 inline-flex items-center gap-1.5 rounded-full bg-indigo-50 px-3 py-1 text-xs font-semibold text-indigo-700">
+              <i data-lucide="sparkles" class="h-3 w-3 text-indigo-500"></i>
+              Jazira AI — NIS Academic Standard (HTML)
+            </div>
+            <h1 id="app-title" class="text-xl font-extrabold tracking-tight md:text-3xl bg-gradient-to-r from-slate-900 via-slate-800 to-slate-700 bg-clip-text text-transparent">
+              ЭССЕНІ ТАЛДАУ және БАҒАЛАУ ПЛАТФОРМАСЫ
+            </h1>
+            <p id="app-subtitle" class="mt-1 text-xs text-slate-500 md:text-sm font-medium">
+              Қазақ, орыс және ағылшын тілдеріндегі эсселерді автоматты талдау құралы
+            </p>
+          </div>
+        </div>
+
+        <!-- Тілді және жалпы ұпай көрсеткіштерін бақылау панелі -->
+        <div class="flex flex-wrap items-center gap-3">
+          <div class="flex rounded-xl bg-slate-100 p-1 border border-slate-200">
+            <button onclick="setLanguage('kk')" id="lang-kk" class="rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 transition bg-white text-indigo-600 shadow-sm">
+              <span>🇰🇿</span> Қаз
+            </button>
+            <button onclick="setLanguage('ru')" id="lang-ru" class="rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 transition text-slate-600">
+              <span>🇷🇺</span> Рус
+            </button>
+            <button onclick="setLanguage('en')" id="lang-en" class="rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 transition text-slate-600">
+              <span>🇬🇧</span> Eng
+            </button>
+          </div>
+
+          <!-- Метрикалық ұпайлар карточкасы -->
+          <div class="flex gap-2">
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 flex flex-col justify-center min-w-[110px] shadow-sm">
+              <div id="lbl-overall-score" class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">ЖАЛПЫ ҰПАЙ</div>
+              <div id="overall-score-val" class="text-sm font-black text-slate-800">95 / 100</div>
+            </div>
+            <div class="rounded-2xl border border-slate-200 bg-slate-50 px-4 py-2 flex flex-col justify-center min-w-[110px] shadow-sm">
+              <div id="lbl-error-count" class="text-[9px] font-bold text-slate-400 uppercase tracking-wider">ҚАТЕЛЕР САНЫ</div>
+              <div id="error-count-val" class="text-sm font-black text-rose-600">0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Жүйелік қателер немесе хабарландырулар блогы -->
+    <div id="error-banner" class="hidden flex items-center gap-3 rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-800">
+      <i data-lucide="alert-triangle" class="h-5 w-5 shrink-0 text-rose-500"></i>
+      <p id="error-banner-text" class="flex-1 font-medium"></p>
+      <button onclick="hideErrorBanner()" class="rounded-lg p-1 hover:bg-rose-100">
+        <i data-lucide="x" class="h-4 w-4"></i>
+      </button>
+    </div>
+
+    <!-- Жұмыс кеңістігінің негізгі торы (Workspace Layout) -->
+    <div class="grid gap-6 lg:grid-cols-[1.15fr_0.85fr]">
+      
+      <!-- СОЛ ЖАҚ БАҒАН: Эссе редакторы және қателер статистикасы -->
+      <div class="space-y-6">
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-100 pb-4">
+            <div>
+              <h2 class="text-base font-bold text-slate-800 flex items-center gap-2">
+                <i data-lucide="file-text" class="h-5 w-5 text-indigo-500"></i>
+                <span id="lbl-editor">Редактор</span>
+              </h2>
+              <p id="essay-title-subtitle" class="text-xs text-slate-500 truncate max-w-[280px] sm:max-w-xs">Жүктелуде...</p>
+            </div>
+            
+            <!-- Мәтінге қатысты әрекеттер батырмалары -->
+            <div class="flex flex-wrap gap-1.5">
+              <input type="file" id="file-input" class="hidden" accept=".txt,text/plain,.docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document,image/*" onchange="handleFileUpload(event)">
+              <button onclick="triggerFileUpload()" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold hover:bg-slate-100 transition">
+                <i data-lucide="upload" class="h-3.5 w-3.5"></i>
+                <span id="lbl-upload" class="hidden sm:inline">Жүктеу (.TXT / .DOCX / Сурет)</span>
+              </button>
+              <button onclick="downloadReport()" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold hover:bg-slate-100 transition">
+                <i data-lucide="download" class="h-3.5 w-3.5"></i>
+                <span id="lbl-download" class="hidden sm:inline">Есепті жүктеу</span>
+              </button>
+              <button onclick="copyFeedback()" class="inline-flex items-center gap-1 rounded-xl border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold hover:bg-slate-100 transition">
+                <i id="copy-icon" data-lucide="copy" class="h-3.5 w-3.5"></i>
+                <span id="lbl-copy">Көшіру</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Қолжазба суреті таңдалғанда көрсетілетін хабарлама -->
+          <div id="image-ocr-note-banner" class="hidden mt-4 p-3 bg-indigo-50/50 border border-indigo-100 rounded-2xl flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <i data-lucide="image" class="h-8 w-8 text-indigo-500 shrink-0"></i>
+              <div>
+                <div id="lbl-image-selected" class="text-xs font-bold text-slate-800">Құжат/Сурет таңдалды: </div>
+                <div id="lbl-ocr-note" class="text-[10px] text-slate-500">Құжат жүктелді. AI Талдау басылғанда қолжазба мәтінге (OCR) немесе құжат цифрлық талдауға айналады!</div>
+              </div>
+            </div>
+            <button onclick="clearSelectedImage()" class="rounded-full bg-slate-200 p-1 hover:bg-slate-300">
+              <i data-lucide="x" class="h-3.5 w-3.5"></i>
+            </button>
+          </div>
+
+          <!-- Академиялық демонстрациялық үлгілерді таңдау панелі -->
+          <div class="mt-4">
+            <div class="grid gap-2 sm:grid-cols-2">
+              <button id="btn-sample-high" onclick="selectSampleType('high')" class="rounded-xl border p-3 text-left transition border-indigo-500 bg-indigo-50/40">
+                <div class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                  <i data-lucide="shield-check" class="h-3.5 w-3.5 text-emerald-500"></i>
+                  <span id="lbl-sample-high">Академиялық үлгі (NIS Алтын белгі)</span>
+                </div>
+                <div class="mt-0.5 text-[10px] text-slate-500">Алтын белгі академиялық нормасы</div>
+              </button>
+              <button id="btn-sample-errors" onclick="selectSampleType('errors')" class="rounded-xl border p-3 text-left transition border-slate-200 bg-white hover:border-slate-300">
+                <div class="font-bold text-xs text-slate-800 flex items-center gap-1">
+                  <i data-lucide="alert-triangle" class="h-3.5 w-3.5 text-amber-500"></i>
+                  <span id="lbl-sample-errors">Қателері бар үлгі эссе (Талдау үшін)</span>
+                </div>
+                <div class="mt-0.5 text-[10px] text-slate-500">Түзету мен талдауды сынауға арналған үлгі</div>
+              </button>
+            </div>
+          </div>
+
+          <!-- Мәтін енгізу өрістері -->
+          <div class="mt-5 rounded-2xl border border-slate-200 bg-slate-50 p-4">
+            <div class="mb-3">
+              <label id="lbl-custom-title" class="mb-1 block text-xs font-bold text-slate-600 uppercase tracking-wider">Эссе тақырыбы</label>
+              <input type="text" id="essay-title-input" class="w-full rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition">
+            </div>
+
+            <div>
+              <div class="mb-2 flex items-center justify-between">
+                <label id="lbl-custom-text" class="block text-xs font-bold text-slate-600 uppercase tracking-wider">Эссе мәтіні</label>
+                <div class="flex rounded-lg bg-slate-200/80 p-0.5">
+                  <button onclick="setEditorTab('editor')" id="btn-editor-tab-write" class="rounded-md px-3 py-1 text-xs font-semibold transition bg-white text-slate-800 shadow-sm">
+                    Редактор
+                  </button>
+                  <button onclick="setEditorTab('interactive')" id="btn-editor-tab-interactive" class="rounded-md px-3 py-1 text-xs font-semibold transition text-slate-500">
+                    Қателер картасы
+                  </button>
+                </div>
+              </div>
+
+              <!-- Редактордың негізгі алаңдары -->
+              <div id="editor-container-write">
+                <textarea id="essay-textarea" rows="11" class="w-full rounded-xl border border-slate-200 bg-white p-4 text-sm leading-relaxed text-slate-800 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100 transition" oninput="updateEssayText(this.value)"></textarea>
+              </div>
+              <div id="editor-container-interactive" class="hidden rounded-xl border border-slate-200 bg-white p-4 min-h-[260px] cursor-text leading-8 text-sm text-slate-800 select-none overflow-y-auto">
+                <!-- Бөлектелген мәтін осында динамикалық түрде орналастырылады -->
+              </div>
+            </div>
+          </div>
+
+          <!-- AI талдауын бастау батырмасы -->
+          <div class="mt-4 flex flex-col sm:flex-row gap-3 items-center justify-between bg-slate-50 rounded-2xl p-4 border border-slate-100">
+            <div class="text-xs text-slate-500 max-w-md">
+              <span class="font-bold text-slate-700">NIS AI Engine:</span> Conforms precisely to NIS rubrics. Эссені бағалау және талдау толықтай автоматтандырылған.
+            </div>
+            <button id="btn-run-analysis" onclick="runAIAnalysis()" class="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-indigo-600 to-sky-600 px-5 py-3 text-sm font-bold text-white shadow-md hover:from-indigo-700 hover:to-sky-700 transition active:scale-95">
+              <i data-lucide="sparkles" class="h-4 w-4"></i>
+              <span id="lbl-analyze-btn">AI Талдауын Жүгірту</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Қателердің статистикалық жиынтық блогы -->
+        <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+          <h3 id="lbl-stats" class="text-base font-bold text-slate-800 mb-3">Қателер статистикасы</h3>
+          <div class="grid gap-3 grid-cols-2 md:grid-cols-4" id="stats-grid-container">
+            <!-- Статистика элементтері динамикалық түрде салынады -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ОҢ ЖАҚ БАҒАН: Бағалау, Чат және Синонимдер тақтасы -->
+      <div class="space-y-6">
+        <div class="flex rounded-2xl bg-slate-200/60 p-1 border border-slate-200/40 shadow-inner">
+          <button onclick="setActiveTab('analysis')" id="tab-btn-analysis" class="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition bg-white text-slate-800 shadow-sm">
+            <i data-lucide="award" class="h-4 w-4 text-emerald-500"></i>
+            <span id="lbl-eval">Бағалау</span>
+          </button>
+          <button onclick="setActiveTab('consultation')" id="tab-btn-consultation" class="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition text-slate-600">
+            <i data-lucide="message-square" class="h-4 w-4 text-indigo-500"></i>
+            <span id="lbl-chat">Ұстазбен Сұхбат</span>
+          </button>
+          <button onclick="setActiveTab('vocabulary')" id="tab-btn-vocabulary" class="flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition text-slate-600">
+            <i data-lucide="search" class="h-4 w-4 text-sky-500"></i>
+            <span id="lbl-synonyms">Синонимдер</span>
+          </button>
+        </div>
+
+        <!-- [1] Бағалау парақшасы -->
+        <div id="tab-content-analysis" class="space-y-6 animate-fade-in">
+          <!-- Критерийлер бойынша бағалау нәтижесі -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <i data-lucide="shield-check" class="h-5 w-5 text-emerald-500"></i>
+              <h3 id="lbl-criteria-header" class="text-base font-bold text-slate-800">8 критерий бойынша бағалау</h3>
+            </div>
+
+            <div class="space-y-4 mb-4" id="criteria-bars-container">
+              <!-- Критерийлер динамикалық түрде осы жерге салынады -->
+            </div>
+          </div>
+
+          <!-- Әдістемелік бағалау рубрикасы (NIS стандартты дескрипторлар) -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <button onclick="toggleRubricPanel()" class="w-full flex items-center justify-between text-left border-none bg-transparent p-1 cursor-pointer outline-none select-none transition hover:opacity-80">
+              <div class="flex items-center gap-3">
+                <i data-lucide="help-circle" class="h-5 w-5 text-indigo-500 shrink-0"></i>
+                <div>
+                  <h3 id="lbl-rubric-title" class="text-sm font-extrabold text-slate-800">Әдістемелік бағалау рубрикасы</h3>
+                  <p id="lbl-rubric-sub" class="text-[10px] text-slate-400 font-medium">NIS стандарты бойынша әр критерийдің бағалану дескрипторлары</p>
+                </div>
+              </div>
+              <div class="rounded-xl bg-slate-100 p-1">
+                <i id="rubric-chevron" data-lucide="chevron-down" class="h-5 w-5 text-slate-500 transition-transform duration-300"></i>
+              </div>
+            </button>
+
+            <div id="rubrics-panel" class="hidden pt-4 mt-4 border-t border-slate-100 space-y-3 max-h-[300px] overflow-y-auto">
+              <!-- Рубрикалар тізімі осында салынады -->
+            </div>
+          </div>
+
+          <!-- Ұстаздың қалыптастырушы жалпы кері байланысы және дауыспен оқу -->
+          <div class="rounded-3xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div class="flex items-center gap-2 border-b border-slate-100 pb-3 mb-4">
+              <i data-lucide="book-open" class="h-5 w-5 text-indigo-500"></i>
+              <h3 id="lbl-overall" class="text-base font-bold text-slate-800">Қалыптастырушы кері байланыс</h3>
+            </div>
+
+            <div class="rounded-2xl bg-indigo-50/50 p-4 border border-indigo-100 mb-4 flex items-start gap-3">
+              <div class="h-10 w-10 rounded-xl bg-indigo-600 text-white font-extrabold text-xs flex items-center justify-center shrink-0 shadow-sm">
+                ЖҰ
+              </div>
+              <p id="teacher-feedback-text" class="text-xs leading-relaxed text-slate-700 font-medium whitespace-pre-line">
+                Жүктелуде...
+              </p>
+            </div>
+
+            <!-- Аудио ойнатқыш баптаулары -->
+            <div class="rounded-2xl border border-slate-100 bg-slate-50 p-4">
+              <div class="flex items-center justify-between mb-3">
+                <span id="lbl-tts-mode" class="text-xs font-bold text-slate-700">Gemini TTS режимі:</span>
+                <div class="flex items-center gap-2">
+                  <button onclick="toggleTtsEnabled()" id="btn-tts-toggle" class="relative inline-flex h-5 w-9 rounded-full border-2 border-transparent transition-colors duration-200 bg-indigo-600">
+                    <span id="btn-tts-toggle-ball" class="inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 translate-x-4"></span>
+                  </button>
+                  <span id="tts-mode-status" class="text-[10px] font-bold text-slate-500 uppercase">AI Дауыс</span>
+                </div>
+              </div>
+
+              <div id="voices-select-container" class="grid grid-cols-2 gap-2 mb-3">
+                <!-- Дауыстар осында динамикалық түрде салынады -->
+              </div>
+
+              <button id="btn-speak" onclick="speakFeedbackText()" class="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 px-4 py-2.5 text-xs font-bold text-white hover:bg-slate-800 transition active:scale-95">
+                <i data-lucide="play" class="h-3.5 w-3.5 fill-white"></i>
+                <span id="lbl-speak">Дауыспен тыңдау</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- [2] Ұстазбен чат парақшасы -->
+        <div id="tab-content-consultation" class="hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm flex flex-col h-[520px] animate-fade-in">
+          <div class="flex items-center gap-2 border-b border-slate-100 pb-3 shrink-0">
+            <div class="relative">
+              <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-pink-500 via-rose-500 to-indigo-600 text-white font-extrabold text-sm flex items-center justify-center shadow-md">
+                ЖҰ
+              </div>
+              <span class="absolute bottom-0 right-0 block h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-white animate-pulse"></span>
+            </div>
+            <div>
+              <h3 id="lbl-chat-teacher-title" class="text-sm font-bold text-slate-800">Жазира Ұстаздан кеңес алу</h3>
+              <p id="lbl-chat-teacher-sub" class="text-[10px] text-slate-400">Эссе жазу техникасын жақсарту жөнінде бағыт-бағдар сұраңыз</p>
+            </div>
+          </div>
+
+          <!-- Чат хабарламалары ағыны -->
+          <div id="chat-messages-container" class="flex-1 overflow-y-auto my-3 space-y-3 pr-1 text-xs scrollbar-none">
+            <!-- Хабарламалар динамикалық түрде салынады -->
+          </div>
+
+          <!-- Жылдам сұрақ қою чиптері -->
+          <div class="mb-3">
+            <div id="lbl-quick-qs" class="text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5">Ықтимал сұрақтар:</div>
+            <div class="flex flex-col gap-1" id="quick-qs-container">
+              <!-- Сұрақтар осында болады -->
+            </div>
+          </div>
+
+          <form onsubmit="handleChatSubmit(event)" class="flex gap-2 shrink-0 pt-2 border-t border-slate-100">
+            <input type="text" id="chat-input-field" placeholder="Ұстазға сұрақ қойыңыз..." class="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2 text-xs outline-none focus:border-indigo-400 focus:bg-white focus:ring-2 focus:ring-indigo-100">
+            <button type="submit" id="btn-send-chat" class="rounded-xl bg-indigo-600 p-2.5 text-white hover:bg-indigo-700 transition">
+              <i data-lucide="send" class="h-4 w-4"></i>
+            </button>
+          </form>
+        </div>
+
+        <!-- [3] Синонимдер тақтасы -->
+        <div id="tab-content-vocabulary" class="hidden rounded-3xl border border-slate-200 bg-white p-5 shadow-sm space-y-4 animate-fade-in">
+          <div class="border-b border-slate-100 pb-3">
+            <h3 id="lbl-vocab-title" class="text-base font-bold text-slate-800">Сөздік қорын байыту</h3>
+            <p id="lbl-vocab-sub" class="text-[10px] text-slate-400">Эсседегі қарапайым сөздерді балама әдеби синонимдермен ауыстырыңыз</p>
+          </div>
+
+          <form onsubmit="handleVocabSearch(event)" class="flex gap-2">
+            <input type="text" id="vocab-input-field" placeholder="Сөзді енгізіңіз..." class="flex-1 rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-xs outline-none focus:border-sky-400 focus:bg-white">
+            <button type="submit" id="btn-vocab-search" class="rounded-xl bg-sky-600 px-4 text-xs font-bold text-white hover:bg-sky-700 transition flex items-center gap-1">
+              <i data-lucide="search" class="h-3 w-3"></i>
+              <span id="lbl-search-btn">Іздеу</span>
+            </button>
+          </form>
+
+          <div id="vocab-results-container">
+            <!-- Синонимдер осында болады -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- МӘЛІМЕТТЕР МОДАЛЬДЫ ТЕРЕЗЕЛЕРІ -->
+  
+  <!-- Белсенді қате туралы толық мәлімет және оны автоматты түзету терезесі -->
+  <div id="error-detail-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-slate-950/40 p-4 backdrop-blur-sm md:items-center">
+    <div class="w-full max-w-xl rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 animate-fade-in" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-3">
+        <div>
+          <div id="modal-error-badge" class="inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider bg-rose-100 text-rose-800 border-rose-300">
+            ОРФОГРАФИЯЛЫҚ
+          </div>
+          <h3 id="modal-error-match" class="mt-2 text-lg font-black text-slate-800">«қате»</h3>
+        </div>
+        <button onclick="closeErrorDetailModal()" class="rounded-full p-1.5 hover:bg-slate-100">
+          <i data-lucide="x" class="h-5 w-5 text-slate-400"></i>
+        </button>
+      </div>
+
+      <div class="mt-4 space-y-3 text-xs">
+        <div class="rounded-2xl bg-slate-50 p-4 border border-slate-100">
+          <div id="lbl-explanation" class="font-bold text-slate-700 mb-1">Неге бұл қате?</div>
+          <p id="modal-error-explanation" class="leading-relaxed text-slate-600">Түсіндірме...</p>
+        </div>
+
+        <div class="rounded-2xl bg-emerald-50 p-4 border border-emerald-100">
+          <div id="lbl-correction" class="font-bold text-emerald-900 mb-1">Ұсынылатын дұрыс нұсқасы:</div>
+          <p id="modal-error-correction" class="leading-relaxed text-emerald-800 font-semibold">Түзету...</p>
+        </div>
+
+        <div class="rounded-2xl bg-sky-50 p-4 border border-sky-100">
+          <div id="lbl-tip" class="font-bold text-sky-900 mb-1">НЗМ Әдіскерінің кеңесі:</div>
+          <p id="modal-error-tip" class="leading-relaxed text-sky-800 italic">« Кеңес... »</p>
+        </div>
+      </div>
+
+      <!-- Түзетуді бір басу арқылы қолдану -->
+      <div class="mt-6 flex gap-3">
+        <button type="button" id="btn-apply-fix" class="flex-1 rounded-xl bg-emerald-600 hover:bg-emerald-700 py-3 text-xs font-bold text-white shadow-md transition active:scale-95 flex items-center justify-center gap-1.5">
+          <i data-lucide="check" class="h-4 w-4"></i>
+          <span id="lbl-apply-fix">Түзетуді қолдану</span>
+        </button>
+        <button type="button" onclick="closeErrorDetailModal()" id="lbl-close-btn" class="rounded-xl bg-slate-100 hover:bg-slate-200 px-6 py-3 text-xs font-bold text-slate-700 transition">
+          Жабу
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Браузерлік шектеулерге байланысты мәтінді қолмен көшіру модаль терезесі -->
+  <div id="copy-fallback-modal" class="hidden fixed inset-0 z-50 flex items-end justify-center bg-slate-950/40 p-4 backdrop-blur-sm md:items-center">
+    <div class="w-full max-w-xl rounded-3xl bg-white p-6 shadow-2xl border border-slate-100 animate-fade-in" onclick="event.stopPropagation()">
+      <div class="flex items-start justify-between gap-4 border-b border-slate-100 pb-3">
+        <div>
+          <h3 id="lbl-fallback-title" class="text-lg font-black text-slate-800">Қолмен көшіру</h3>
+          <p id="lbl-fallback-sub" class="text-xs text-slate-500 mt-1">Автоматты түрде көшіру бұғатталды. Мәтінді қолмен көшіріп алыңыз.</p>
+        </div>
+        <button onclick="closeCopyFallbackModal()" class="rounded-full p-1.5 hover:bg-slate-100">
+          <i data-lucide="x" class="h-5 w-5 text-slate-400"></i>
+        </button>
+      </div>
+      <div class="mt-4">
+        <textarea id="copy-fallback-textarea" readOnly rows="10" onclick="this.select()" class="w-full rounded-2xl border border-slate-200 bg-slate-50 p-4 text-xs font-mono leading-relaxed text-slate-700 outline-none focus:border-indigo-300 focus:ring-2 focus:ring-indigo-100"></textarea>
+        <div id="lbl-fallback-tip" class="mt-2 text-[10px] text-slate-400 font-medium">💡 Мәтінге бір рет бассаңыз, ол толығымен белгіленеді.</div>
+      </div>
+    </div>
+  </div>
+
+  <audio id="tts-audio" class="hidden"></audio>
+
+  <!-- СТАТИКАЛЫҚ ЖӘНЕ ЛОКАЛЫ ДЕРЕКТЕР СӨЗДІГІ (REACT-ТАН АУДАРЫЛҒАН) -->
+  <script>
+    const TRANSLATIONS = {
+      kk: {
+        title: "ЭССЕНІ ТАЛДАУ және БАҒАЛАУ ПЛАТФОРМАСЫ",
+        subtitle: "Қазақ, орыс және ағылшын тілдеріндегі эсселерді автоматты талдау құралы",
+        overallScoreLabel: "ЖАЛПЫ ҰПАЙ",
+        errorCountLabel: "ҚАТЕЛЕР САНЫ",
+        editor: "Редактор",
+        map: "Қателер картасы",
+        upload: "Жүктеу (.TXT / .DOCX / Сурет)",
+        download: "Есепті жүктеу",
+        copy: "Көшіру",
+        copied: "Көшірілді!",
+        customTitle: "Эссе тақырыбы",
+        customText: "Эссе мәтіні",
+        analyzeBtn: "AI Талдауын Жүгірту",
+        analyzing: "AI Талдау жүріп жатыр...",
+        stats: "Қателер статистикасы",
+        noErrors: "Қателер табылған жоқ!",
+        eval: "Бағалау",
+        chat: "Ұстазбен Сұхбат",
+        synonyms: "Синонимдер",
+        speak: "Дауыспен тыңдау",
+        stopSpeak: "Тоқтату",
+        ttsLoading: "Дыбыс дайындалуда...",
+        ttsMode: "Gemini TTS режимі",
+        overall: "Қалыптастырушы кері байланыс",
+        demo: "Локалды TTS",
+        aiVoice: "AI Дауыс",
+        chatWithTeacher: "Жазира Ұстаздан кеңес алу",
+        chatSub: "Эссе жазу техникасын жақсарту жөнінде бағыт-бағдар сұраңыз",
+        chatPlaceholder: "Ұстазға сұрақ қойыңыз (мысалы, аргументті қалай нығайтамын?)...",
+        vocabTitle: "Сөздік қорын байыту",
+        vocabSub: "Эсседегі қарапайым сөздерді балама әдеби синонимдермен ауыстырыңыз",
+        vocabPlaceholder: "Сөзді енгізіңіз...",
+        searchBtn: "Іздеу",
+        explanation: "Неге бұл қате?",
+        correction: "Ұсынылатын дұрыс нұсқасы:",
+        tip: "НЗМ Әдіскерінің кеңесі:",
+        imageSelected: "Құжат/Сурет таңдалды: ",
+        ocrNote: "Құжат жүктелді. AI Талдау басылғанда қолжазба мәтінге (OCR) немесе құжат цифрлық талдауға айналады!",
+        rubricTitle: "Әдістемелік бағалау рубрикасы",
+        rubricSub: "NIS стандарты бойынша әр критерийдің бағалану дескрипторлары",
+        sampleHigh: "Академиялық үлгі (NIS Алтын белгі)",
+        sampleErrors: "Қателері бар үлгі эссе (Талдау үшін)",
+        applyFix: "Түзетуді қолдану",
+        closeBtn: "Жабу",
+        quickQuestions: "Ықтимал сұрақтар:",
+        q1: "Эссе құрылымын қалай жақсартамын?",
+        q2: "Дәлелдемелерді қалай нығайтамын?",
+        q3: "Академиялық стильді қалай сақтаймын?",
+        vocabIntro: "Эссеңіздегі қарапайым сөзді теріп, оның орнына қолдануға болатын ғылыми немесе әдеби синонимдерін табыңыз.",
+        backToEditor: "Редакторға оралу",
+        noWordEntered: "Сөз енгізілген жоқ",
+        fallbackTitle: "Қолмен көшіру",
+        fallbackSub: "Браузер қауіпсіздік саясатына байланысты автоматты түрде көшіру бұғатталды. Төмендегі мәтінді белгілеп, қолмен көшіріп алыңыз.",
+        fallbackTip: "💡 Мәтінге бір рет бассаңыз, ол толығымен белгіленеді."
+      },
+      ru: {
+        title: "ПЛАТФОРМА АНАЛИЗА И ОЦЕНКИ ЭССЕ",
+        subtitle: "Инструмент автоматического анализа эссе на казахском, русском и английском языках",
+        overallScoreLabel: "ОБЩИЙ БАЛЛ",
+        errorCountLabel: "КОЛ-ВО ОШИБОК",
+        editor: "Редактор",
+        map: "Карта ошибок",
+        upload: "Загрузить (.TXT / .DOCX / Фото)",
+        download: "Скачать отчет",
+        copy: "Копировать",
+        copied: "Скопировано!",
+        customTitle: "Тема эссе",
+        customText: "Текст эссе",
+        analyzeBtn: "Запустить AI Анализ",
+        analyzing: "Анализ выполняется...",
+        stats: "Статистика ошибок",
+        noErrors: "Ошибок не обнаружено!",
+        eval: "Оценивание",
+        chat: "Беседа с Учителем",
+        synonyms: "Синонимы",
+        speak: "Прослушать голос",
+        stopSpeak: "Остановить",
+        ttsLoading: "Синтез голоса...",
+        ttsMode: "Режим Gemini TTS",
+        overall: "Формативная обратная связь",
+        demo: "Локальный TTS",
+        aiVoice: "AI Голос",
+        chatWithTeacher: "Консультация с Учителем Жазирой",
+        chatSub: "Задайте вопрос эксперту-педагогу по улучшению эссе",
+        chatPlaceholder: "Задайте вопрос учителю...",
+        vocabTitle: "Обогащение словарного запаса",
+        vocabSub: "Заменяйте слова в эссе на академические синонимы",
+        vocabPlaceholder: "Введите слово...",
+        searchBtn: "Поиск",
+        explanation: "В чем заключается ошибка?",
+        correction: "Рекомендуемый правильный вариант:",
+        tip: "Совет методиста:",
+        imageSelected: "Выбран документ/фото: ",
+        ocrNote: "Файл загружен. При запуске анализа рукопись будет распознана (OCR)!",
+        rubricTitle: "Методическая рубрика оценивания",
+        rubricSub: "Дескрипторы начисления баллов по стандартам NIS",
+        sampleHigh: "Академический образец (NIS Высокий)",
+        sampleErrors: "Образец с ошибками (Для проверки)",
+        applyFix: "Применить исправление",
+        closeBtn: "Закрыть",
+        quickQuestions: "Частые вопросы:",
+        q1: "Как улучшить структуру эссе?",
+        q2: "Как усилить аргументацию?",
+        q3: "Как соблюдать академический стиль?",
+        vocabIntro: "Введите обычные слова, чтобы подобрать к ним академические синонимы.",
+        backToEditor: "Вернуться к редактору",
+        noWordEntered: "Слово не введено",
+        fallbackTitle: "Ручное копирование",
+        fallbackSub: "Автоматическое копирование заблокировано политикой безопасности браузера. Пожалуйста, выделите и скопируйте текст вручную.",
+        fallbackTip: "💡 Кликните на текст, чтобы выделить его полностью."
+      },
+      en: {
+        title: "ESSAY ANALYSIS AND EVALUATION PLATFORM",
+        subtitle: "Automatic essay analysis tool for Kazakh, Russian, and English languages",
+        overallScoreLabel: "OVERALL SCORE",
+        errorCountLabel: "ERROR COUNT",
+        editor: "Editor",
+        map: "Error Map",
+        upload: "Upload (.TXT/.DOCX/Img)",
+        download: "Download Report",
+        copy: "Copy",
+        copied: "Copied!",
+        customTitle: "Essay Title",
+        customText: "Essay Text",
+        analyzeBtn: "Run AI Analysis",
+        analyzing: "AI Analyzing...",
+        stats: "Error Statistics",
+        noErrors: "No errors detected!",
+        eval: "Assessment",
+        chat: "Consult Teacher",
+        synonyms: "Synonyms",
+        speak: "Listen to Voice",
+        stopSpeak: "Stop",
+        ttsLoading: "Preparing audio...",
+        ttsMode: "Gemini TTS Mode",
+        overall: "Formative Feedback",
+        demo: "Local TTS",
+        aiVoice: "AI Voice",
+        chatWithTeacher: "Consult Teacher Jazira",
+        chatSub: "Ask for tips to improve your academic writing skills",
+        chatPlaceholder: "Ask teacher a question...",
+        vocabTitle: "Vocabulary Booster",
+        vocabSub: "Replace words in your essay with academic synonyms",
+        vocabPlaceholder: "Enter word...",
+        searchBtn: "Search",
+        explanation: "Why is this an error?",
+        correction: "Corrected version:",
+        tip: "NIS Methodologist's Advice:",
+        imageSelected: "Document/Image selected: ",
+        ocrNote: "File uploaded. Clicking Analyze will convert handwriting to text!",
+        rubricTitle: "Methodological Evaluation Rubric",
+        rubricSub: "Point allocation descriptors aligned with NIS rubrics",
+        sampleHigh: "Academic Sample (NIS High)",
+        sampleErrors: "Sample with Errors (For analysis)",
+        applyFix: "Apply Correction",
+        closeBtn: "Close",
+        quickQuestions: "Frequently Asked Questions:",
+        q1: "How can I improve essay structure?",
+        q2: "How can I strengthen my arguments?",
+        q3: "How do I maintain an academic style?",
+        vocabIntro: "Enter generic words from your essay to discover advanced synonyms.",
+        backToEditor: "Back to Editor",
+        noWordEntered: "No word entered",
+        fallbackTitle: "Manual Copy",
+        fallbackSub: "Automatic copy was blocked by browser security policies. Please select and copy the text below manually.",
+        fallbackTip: "💡 Click the text to select all."
+      }
+    };
+
+    const REPORT_TRANSLATIONS = {
+      kk: { header: "ЖАЗИРА ҰСТАЗ (30 ЖЫЛ ТӘЖІРИБЕ) — ЭССЕНІ ТАЛДАУ ЕСЕБІ", title: "Тақырыбы", score: "Жалпы ұпай", criteria: "Критерийлер бойынша бағалау", feedback: "Ұстаздың кері байланысы", errors: "Анықталған қателер", noErrors: "Қате табылмады.", originalText: "Түпнұсқа мәтін" },
+      ru: { header: "УЧИТЕЛЬ ЖАЗИРА — ОТЧЕТ ПО АНАЛИЗУ ЭССЕ", title: "Тема", score: "Общий балл", criteria: "Оценка по критериям", feedback: "Обратная связь учителя", errors: "Ошибки", noErrors: "Ошибок нет.", originalText: "Оригинальный текст" },
+      en: { header: "TEACHER JAZIRA — ESSAY ANALYSIS REPORT", title: "Title", score: "Overall Score", criteria: "Criteria Breakdown", feedback: "Teacher Feedback", errors: "Errors", noErrors: "No errors.", originalText: "Original Text" }
+    };
+
+    const CRITERIA = [
+      { key: "content", label: { kk: "Мазмұн (Тақырыптың ашылуы)", ru: "Содержание (Раскрытие темы)", en: "Content & Relevance" }, max: 15 },
+      { key: "logic", label: { kk: "Жүйелілік және логикалық байланыс", ru: "Логичность и последовательность", en: "Logic & Flow" }, max: 15 },
+      { key: "argument", label: { kk: "Дәлелдемелер мен Аргументация", ru: "Аргументация и доказательства", en: "Arguments and Evidence" }, max: 15 },
+      { key: "structure", label: { kk: "Құрылымы (Кіріспе/Негізгі/Қорытынды)", ru: "Структура (Введение/Основная/Заключение)", en: "Structure (Intro/Body/Conclusion)" }, max: 15 },
+      { key: "style", label: { kk: "Стилистикалық сауаттылық", ru: "Стилистика", en: "Style" }, max: 10 },
+      { key: "ortho", label: { kk: "Орфографиялық нормалар", ru: "Грамматика (Орфография)", en: "Grammar (Orthography)" }, max: 10 },
+      { key: "punct", label: { kk: "Пунктуациялық нормалар", ru: "Грамматика (Пунктуация)", en: "Grammar (Punctuation)" }, max: 10 },
+      { key: "literacy", label: { kk: "Тілдік жалпы сауаттылық", ru: "Грамотность", en: "Literacy" }, max: 10 }
+    ];
+
+    const ERROR_STYLES = {
+      style: { label: { kk: "Стилистикалық", ru: "Стилистическая", en: "Stylistic" }, color: "bg-amber-100 text-amber-800 border-amber-300", underline: "decoration-amber-500", dot: "bg-amber-500" },
+      ortho: { label: { kk: "Орфографиялық", ru: "Орфографическая", en: "Spelling" }, color: "bg-rose-100 text-rose-800 border-rose-300", underline: "decoration-rose-500", dot: "bg-rose-500" },
+      punct: { label: { kk: "Пунктуациялық", ru: "Пунктуационная", en: "Punctuation" }, color: "bg-sky-100 text-sky-800 border-sky-300", underline: "decoration-sky-500", dot: "bg-sky-500" },
+      logic: { label: { kk: "Құрылым/Логика", ru: "Структура/Логика", en: "Structure/Logic" }, color: "bg-violet-100 text-violet-800 border-violet-300", underline: "decoration-violet-500", dot: "bg-violet-500" },
+    };
+
+    const RUBRICS_DATA = {
+      kk: [
+        { title: "Мазмұн (Тақырыптың ашылуы)", max: "15 ұпай", desc: "Тақырып терең ашылған, негізгі идея айқын көрінеді, теориялық негіздер мен сыни талдау толыққанды ұштасқан." },
+        { title: "Жүйелілік және логикалық байланыс", max: "15 ұпай", desc: "Жүйелілік пен логикалық өткелдер сақталған. Сөйлемдер арасындағы мағыналық сабақтастық берік." },
+        { title: "Дәлелдемелер мен Аргументация", max: "15 ұпай", desc: "Деректер, зерттеулер немесе тарихи мысалдар нақты қолданылған. Әр аргумент сыни тұрғыдан дәйектелген." },
+        { title: "Құрылымы (Кіріспе/Негізгі/Қорытынды)", max: "15 ұпай", desc: "Үш бөлімді академиялық эссе құрылымы толық сақталып, абзацтар дұрыс бөлінген." },
+        { title: "Стилистикалық сауаттылық", max: "10 ұпай", desc: "Формальды академиялық стиль толығымен сақталған, ауызекі сөздер мен неологизмдер жоқ." },
+        { title: "Орфографиялық нормалар", max: "10 ұпай", desc: "Сөздер емле ережелеріне толық сәйкес келеді, әріптік немесе орфографиялық қателер кездеспейді." },
+        { title: "Пунктуациялық нормалар", max: "10 ұпай", desc: "Синтаксистік құрылымдарда, қыстырма сөздер мен бағыныңқы сөйлемдерде тыныс белгілері дәл қойылған." },
+        { title: "Тілдік жалпы сауаттылық", max: "10 ұпай", desc: "Сөйлеу қателері мен орынсыз қайталаулар болмауы тиіс, сөйлем құрылымы күрделі әрі сауатты құрылған." }
+      ],
+      ru: [
+        { title: "Содержание (Раскрытие темы)", max: "15 баллов", desc: "Тема раскрыта глубоко, продемонстрировано критическое мышление." },
+        { title: "Логичность и последовательность", max: "15 баллов", desc: "Идеи последовательны, логические переходы выстроены грамотно." },
+        { title: "Аргументация и доказательства", max: "15 баллов", desc: "Суждения подкреплены фактами, исследованиями или примерами." },
+        { title: "Структура (Введение/Основная/Заключение)", max: "15 баллов", desc: "Соблюдена структура эссе, абзацы сбалансированы." },
+        { title: "Стилистика", max: "10 баллов", desc: "Соблюден строгий академический стиль речи, отсутствуют разговорные формы." },
+        { title: "Грамматика (Орфография)", max: "10 баллов", desc: "Слова написаны без орфографических ошибок." },
+        { title: "Грамматика (Пунктуация)", max: "10 баллов", desc: "Запятые и другие знаки препинания расставлены верно." },
+        { title: "Грамотность", max: "10 баллов", desc: "Речевая грамотность соблюдена, лексический запас богат." }
+      ],
+      en: [
+        { title: "Content & Relevance", max: "15 points", desc: "Topic is fully developed, showing exceptional critical thinking." },
+        { title: "Logic & Flow", max: "15 points", desc: "Ideas are sequenced logically with professional cohesive devices." },
+        { title: "Arguments and Evidence", max: "15 points", desc: "Claims are backed by concrete academic evidence or references." },
+        { title: "Structure", max: "15 points", desc: "Academic three-part essay structure is maintained perfectly." },
+        { title: "Style", max: "10 points", desc: "Rigorous academic register is utilized throughout." },
+        { title: "Grammar (Orthography)", max: "10 points", desc: "Spelling conforms entirely to standard lexicographical rules." },
+        { title: "Grammar (Punctuation)", max: "10 points", desc: "Punctuation marks are placed accurately in complex clauses." },
+        { title: "Literacy", max: "10 points", desc: "Vocabulary is rich and varied with clear syntactical literacy." }
+      ]
+    };
+
+    const SAMPLE_ESSAY = {
+      kk: {
+        title: "Білім сапасы және жеке мотивация ықпалы",
+        text: "Білімнің сапасы тек оқулыққа емес, оқушының ішкі мотивациясына да тікелей байланысты. Егер жасөспірім өз мақсатын анық түсінсе, ол ақпаратты жай қабылдамай, оны талдап, өмірлік тәжірибемен байланыстыра біледі. Осы тұрғыдан алғанда, мұғалімнің міндеті — тек білім бирге емес, сонымен бірге ойлануға жетелеу. Мәселен, эссе жазу кезінде оқушы өз көзқарасын дәлелмен негіздеп, қарсы пікірді ескеріп, тұжырымын жинақы ұсынуы тиіс. Демек, саналы оқу дағдысы мен жүйелі ойлау бір-бірін толықтыратын қабілеттер болып табылады."
+      },
+      ru: {
+        title: "Влияние внутренней мотивации на качество обучения",
+        text: "Качество образования зависит не только от школьных учебников, но и от внутренней мотивации самого учащегося. Если молодой человек четко понимает свои цели, он не просто пассивно воспринимает информацию, а анализирует её и сопоставляет с жизненным опытом. С этой точки зрения, задача преподавателя состоит не в механической передаче фактов, а в стимулировании мышления."
+      },
+      en: {
+        title: "The Influence of Internal Motivation on Education Quality",
+        text: "The quality of education depends directly not only on textbooks but also on the internal motivation of the student. When a young person clearly understands their goals, they do not just accept information passively; instead, they analyze it and link it to real-world experience. From this perspective, a teacher's duty is not merely to provide facts, but to guide the thought process."
+      }
+    };
+
+    const SAMPLE_ESSAY_WITH_ERRORS = {
+      kk: {
+        title: "Мектептегі білімнің рөлі мен кемшіліктері",
+        text: "Қазіргі кезде білім алу өте маңызды себебі білімсіз болашақ жоқ. Менің ойымша әрбір бала мектепке бару керек бірақ кейбір оқушылар сабақ оқығысы келмиді. Олар күні бойы телефон ойнап уақытты босқа кетіреді, бұл өте өкінішті жағдай. Мұғалімдер сабақты қызықты қылса жақсы болар еді, сонда балалардың ынтасы артады."
+      },
+      ru: {
+        title: "Роль школьного образования в наше время",
+        text: "В наше время образование очень важно потому что без него нет будующего. По моему мнению каждый ребенок должен ходить в школу но некоторые ученики не хотят учится. Они целый день играют в телефоны и тратят время впустую, это очень плохая ситуация. Если бы учителя делали уроки интереснее было бы хорошо."
+      },
+      en: {
+        title: "The Role of Education in Modern Schools",
+        text: "In modern times education is very important because without it there is no future. In my opinion every child must go to school but some students do not want to learn. They play on phones all day and waist their time, this is a very sad situation. If teachers made lessons more interesting it will be better."
+      }
+    };
+
+    const MOCK_ERRORS_KK = [
+      { id: "mock-err-1", match: "маңызды себебі", type: "punct", correction: "маңызды, себебі", explanation: "«Себебі» жалғаулығының алдына үтір қойылуы тиіс (себеп-салдар бағыныңқылы сабақтас құрмалас сөйлем байланысы).", teacherTip: "Құрмалас сөйлемдердегі себеп-салдарлық қатынастарды білдіретін шылаулардың тыныс белгілеріне назар аударыңыз." },
+      { id: "mock-err-2", match: "Менің ойымша әрбір", type: "punct", correction: "Менің ойымша, әрбір", explanation: "«Менің ойымша» қыстырма сөзінен кейін әрқашан үтір белгісі қойылуы керек.", teacherTip: "Пікірді, көзқарасты білдіретін қыстырма сөздерді әрқашан сөйлемде үтірмен оқшаулаңыз." },
+      { id: "mock-err-3", match: "керек бірақ", type: "punct", correction: "керек, бірақ", explanation: "«Бірақ» қарсылықты жалғаулығының алдына әрқашан үтір қойылады.", teacherTip: "Қарсылықты қатынасты білдіретін жалғаулықтардың тыныс белгісін есте сақтаңыз." },
+      { id: "mock-err-4", match: "келмиді", type: "ortho", correction: "келмейді", explanation: "Сөздің соңындағы «-мейді» болымсыздық жұрнағы орфографиялық норма бойынша «ей» әріптерімен жазылады.", teacherTip: "Болымсыз етістіктердің емле ережесін қайталаңыз." },
+      { id: "mock-err-5", match: "телефон ойнап", type: "style", correction: "телефонды пайдаланып / экранға үңіліп", explanation: "«Телефон ойнау» — ауызекі сөйлеу стиліне тән тіркес. Академиялық мәтінде бұл бейресми болып көрінеді.", teacherTip: "Эсседе әрқашан ресми, академиялық немесе публицистикалық стильді қолданыңыз." }
+    ];
+
+    const VOICES = [
+      { id: "Leda", label: "Leda (Жылы, әйел адам)" },
+      { id: "Kore", label: "Kore (Мелодиялы, әйел адам)" },
+      { id: "Puck", label: "Puck (Сабырлы, ер адам)" },
+      { id: "Zephyr", label: "Zephyr (Көңілді, ер адам)" }
+    ];
+  </script>
+
+  <!-- БАСТЫ ПЛАТФОРМА ЛОГИКАСЫ (VANILLA JS STATE MANAGEMENT) -->
+  <script>
+    // Қосымшаның негізгі күйі (State)
+    const state = {
+      lang: "kk",
+      sampleType: "high",
+      essayTitle: "",
+      essayText: "",
+      assessment: {
+        scoreData: { content: 15, logic: 14, argument: 14, structure: 15, style: 9, ortho: 10, punct: 9, literacy: 9, total: 95 },
+        feedback: "",
+        errors: []
+      },
+      activeTab: "analysis",
+      editorTab: "editor",
+      showRubricPanel: false,
+      selectedImage: null,
+      imageName: "",
+      analyzing: false,
+      ttsLoading: false,
+      ttsEnabled: true,
+      selectedVoice: "Leda",
+      audioPlaying: false,
+      errorMessage: "",
+      copied: false,
+      activeError: null,
+      chatMessages: [],
+      chatInput: "",
+      sendingChat: false,
+      vocabWord: "",
+      vocabResult: null,
+      searchingVocab: false
+    };
+
+    // Қосымша іске қосылғанда орындалатын бастапқы функция
+    window.addEventListener("DOMContentLoaded", () => {
+      setLanguage("kk");
+      lucide.createIcons();
+    });
+
+    // 16-биттік PCM аудио деректерін стандартты WAV форматына айналдыру функциясы
+    function pcm16ToWavBlob(pcm16ArrayBuffer, sampleRate = 24000) {
+      const pcm = new Int16Array(pcm16ArrayBuffer);
+      const buffer = new ArrayBuffer(44 + pcm.length * 2);
+      const view = new DataView(buffer);
+      const writeString = (offset, str) => {
+        for (let i = 0; i < str.length; i++) view.setUint8(offset + i, str.charCodeAt(i));
+      };
+      writeString(0, "RIFF");
+      view.setUint32(4, 36 + pcm.length * 2, true);
+      writeString(8, "WAVE");
+      writeString(12, "fmt ");
+      view.setUint32(16, 16, true);
+      view.setUint16(20, 1, true);
+      view.setUint16(22, 1, true);
+      view.setUint32(24, sampleRate, true);
+      view.setUint32(28, sampleRate * 2, true);
+      view.setUint16(32, 2, true);
+      view.setUint16(34, 16, true);
+      writeString(36, "data");
+      view.setUint32(40, pcm.length * 2, true);
+      let offset = 44;
+      for (let i = 0; i < pcm.length; i++, offset += 2) view.setInt16(offset, pcm[i], true);
+      return new Blob([buffer], { type: "audio/wav" });
+    }
+
+    // Экспоненциалды кері шегініспен API сұраныстарын жіберу функциясы (Retry Logic)
+    async function fetchWithRetry(url, options, maxRetries = 5) {
+      let delay = 1000;
+      for (let i = 0; i < maxRetries; i++) {
+        try {
+          const response = await fetch(url, options);
+          if (response.ok) return response;
+          if (response.status === 429 || response.status >= 500) {
+            await new Promise((res) => setTimeout(res, delay));
+            delay *= 2;
+            continue;
+          }
+          return response;
+        } catch (error) {
+          if (i === maxRetries - 1) throw error;
+          await new Promise((res) => setTimeout(res, delay));
+          delay *= 2;
+        }
+      }
+      throw new Error("API Connection Timeout.");
+    }
+
+    // Талдаудың толық мәтіндік есебін генерациялаушы қызметтік функция
+    function reportText({ essayTitle, essayText, scoreData, errors, note, lang }) {
+      const rt = REPORT_TRANSLATIONS[lang] || REPORT_TRANSLATIONS.kk;
+      
+      const maxLabelLen = Math.max(...CRITERIA.map(c => c.label[lang]?.length || 10));
+      
+      const rows = CRITERIA.map((c, i) => {
+        const label = (c.label[lang] || "").padEnd(maxLabelLen + 2, " ");
+        const scoreVal = scoreData?.[c.key] !== undefined ? scoreData[c.key] : 0;
+        const scoreStr = `${scoreVal}/${c.max}`;
+        return `    ${i + 1}. ${label} [ ${scoreStr.padStart(5, " ")} ]`;
+      }).join("\n");
+
+      let errorLines = `    ${rt.noErrors}`;
+      if (errors && errors.length > 0) {
+        errorLines = errors.map((e, i) => {
+          const type = ERROR_STYLES[e.type]?.label[lang] || e.type.toUpperCase();
+          return `    [ Қате ${i + 1} | Түрі: ${type} ]\n    - Түпнұсқа:   «${e.match}»\n    - Түзету:     «${e.correction}»\n    - Түсіндірме: ${e.explanation}\n    - Кеңес:      ${e.teacherTip}`;
+        }).join("\n\n");
+      }
+
+      return `====================================================================
+    ${rt.header.toUpperCase()}
+====================================================================
+
+ * ${rt.title.toUpperCase()}: ${essayTitle}
+ * ${rt.score.toUpperCase()}: ${scoreData?.total || 0} / 100
+
+====================================================================
+ [1] ${rt.criteria.toUpperCase()} (КЕСТЕ)
+====================================================================
+${rows}
+
+====================================================================
+ [2] ${rt.feedback.toUpperCase()}
+====================================================================
+   "${note}"
+
+====================================================================
+ [3] ${rt.errors.toUpperCase()} (СТАТИСТИКА ЖӘНЕ ТАЛДАУ)
+====================================================================
+${errorLines}
+
+====================================================================
+ [4] ${rt.originalText.toUpperCase()}
+====================================================================
+   "${essayText}"
+
+====================================================================`;
+    }
+
+    // Есеп файлын жүктеп алуды іске асыратын функция
+    function downloadFile(filename, content, mime = "text/plain;charset=utf-8") {
+      const blob = new Blob([content], { type: mime });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = filename;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    }
+
+    // Тілді таңдау және орнату
+    function setLanguage(newLang) {
+      state.lang = newLang;
+      
+      // Белсенді тіл батырмасын ерекшелеу
+      ["kk", "ru", "en"].forEach(l => {
+        const btn = document.getElementById(`lang-${l}`);
+        if (l === newLang) {
+          btn.className = "rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 transition bg-white text-indigo-600 shadow-sm";
+        } else {
+          btn.className = "rounded-lg px-3 py-1.5 text-xs font-bold flex items-center gap-1 transition text-slate-600 hover:bg-slate-200/50";
+        }
+      });
+
+      // Үлгі таңдау күйі бойынша мәтіндерді алу
+      loadCurrentSample();
+      translateUI();
+      renderAll();
+    }
+
+    // Тілге сай интерфейсті аудару
+    function translateUI() {
+      const t = TRANSLATIONS[state.lang];
+      
+      // Басты баннер
+      document.getElementById("app-title").textContent = t.title;
+      document.getElementById("app-subtitle").textContent = t.subtitle;
+      
+      // Метрика белгілері
+      document.getElementById("lbl-overall-score").textContent = t.overallScoreLabel;
+      document.getElementById("lbl-error-count").textContent = t.errorCountLabel;
+      
+      // Редактор құралдары
+      document.getElementById("lbl-editor").textContent = t.editor;
+      document.getElementById("lbl-upload").textContent = t.upload;
+      document.getElementById("lbl-download").textContent = t.download;
+      document.getElementById("lbl-copy").textContent = state.copied ? t.copied : t.copy;
+      
+      // Демо батырмалар
+      document.getElementById("lbl-sample-high").textContent = t.sampleHigh;
+      document.getElementById("lbl-sample-errors").textContent = t.sampleErrors;
+      
+      // Өріс белгілері
+      document.getElementById("lbl-custom-title").textContent = t.customTitle;
+      document.getElementById("lbl-custom-text").textContent = t.customText;
+      document.getElementById("btn-editor-tab-write").textContent = t.editor;
+      document.getElementById("btn-editor-tab-interactive").textContent = t.map;
+      
+      // Талдау батырмасы
+      const runBtn = document.getElementById("btn-run-analysis");
+      if (state.analyzing) {
+        runBtn.innerHTML = `<i data-lucide="loader-2" class="h-4 w-4 animate-spin"></i> <span>${t.analyzing}</span>`;
+      } else {
+        runBtn.innerHTML = `<i data-lucide="sparkles" class="h-4 w-4"></i> <span>${t.analyzeBtn}</span>`;
+      }
+      
+      // Статистика және Рубрика
+      document.getElementById("lbl-stats").textContent = t.stats;
+      document.getElementById("lbl-eval").textContent = t.eval;
+      document.getElementById("lbl-chat").textContent = t.chat;
+      document.getElementById("lbl-synonyms").textContent = t.synonyms;
+      document.getElementById("lbl-criteria-header").textContent = state.lang === "kk" ? "8 критерий бойынша бағалау" : state.lang === "ru" ? "Оценка по 8 критериям" : "Evaluation by 8 Criteria";
+      
+      document.getElementById("lbl-rubric-title").textContent = t.rubricTitle;
+      document.getElementById("lbl-rubric-sub").textContent = t.rubricSub;
+      document.getElementById("lbl-overall").textContent = t.overall;
+      
+      // TTS баптаулары
+      document.getElementById("lbl-tts-mode").textContent = t.ttsMode;
+      document.getElementById("tts-mode-status").textContent = state.ttsEnabled ? t.aiVoice : t.demo;
+      
+      // Ойнату батырмасы
+      const speakBtn = document.getElementById("btn-speak");
+      if (state.ttsLoading) {
+        speakBtn.innerHTML = `<i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin"></i> <span>${t.ttsLoading}</span>`;
+      } else if (state.audioPlaying) {
+        speakBtn.innerHTML = `<i data-lucide="pause" class="h-3.5 w-3.5 fill-white"></i> <span>${t.stopSpeak}</span>`;
+      } else {
+        speakBtn.innerHTML = `<i data-lucide="play" class="h-3.5 w-3.5 fill-white"></i> <span>${t.speak}</span>`;
+      }
+
+      // Чат бөлімі
+      document.getElementById("lbl-chat-teacher-title").textContent = t.chatWithTeacher;
+      document.getElementById("lbl-chat-teacher-sub").textContent = t.chatSub;
+      document.getElementById("lbl-quick-qs").textContent = t.quickQuestions;
+      document.getElementById("chat-input-field").placeholder = t.chatPlaceholder;
+      
+      // Синонимдер бөлімі
+      document.getElementById("lbl-vocab-title").textContent = t.vocabTitle;
+      document.getElementById("lbl-vocab-sub").textContent = t.vocabSub;
+      document.getElementById("vocab-input-field").placeholder = t.vocabPlaceholder;
+      document.getElementById("lbl-search-btn").textContent = t.searchBtn;
+      
+      // Модальдар аудармасы
+      document.getElementById("lbl-explanation").textContent = t.explanation;
+      document.getElementById("lbl-correction").textContent = t.correction;
+      document.getElementById("lbl-tip").textContent = t.tip;
+      document.getElementById("lbl-apply-fix").textContent = t.applyFix;
+      document.getElementById("lbl-close-btn").textContent = t.closeBtn;
+      document.getElementById("lbl-fallback-title").textContent = t.fallbackTitle;
+      document.getElementById("lbl-fallback-sub").textContent = t.fallbackSub;
+      document.getElementById("lbl-fallback-tip").textContent = t.fallbackTip;
+      
+      lucide.createIcons();
+    }
+
+    // Таңдалған үлгі мәтінін жүктеу
+    function loadCurrentSample() {
+      if (state.sampleType === "high") {
+        state.essayTitle = SAMPLE_ESSAY[state.lang]?.title || "";
+        state.essayText = SAMPLE_ESSAY[state.lang]?.text || "";
+        state.assessment = {
+          scoreData: { content: 15, logic: 14, argument: 14, structure: 15, style: 9, ortho: 10, punct: 9, literacy: 9, total: 95 },
+          feedback: state.lang === "kk" 
+            ? "Өте жоғары, академиялық деңгейдегі керемет НЗМ үлгісіндегі жұмыс! Дәлелдер мен сыни ойлау жүйесі мінсіз ұйымдастырылған." 
+            : state.lang === "ru" 
+              ? "Отличная работа высокого академического уровня! Аргументация построена профессионально." 
+              : "Excellent academic work! Formative evaluation indicates exceptional structure.",
+          errors: []
+        };
+      } else {
+        state.essayTitle = state.lang === "kk" ? "Мектептегі білімнің рөлі" : state.lang === "ru" ? "Роль образования в школе" : "Role of Education in School";
+        state.essayText = SAMPLE_ESSAY_WITH_ERRORS[state.lang]?.text || "";
+        
+        let mockErrors = [];
+        let feedbackText = "";
+        let scores = {};
+        
+        if (state.lang === "kk") {
+          mockErrors = MOCK_ERRORS_KK;
+          feedbackText = "Эсседе құрылымдық және тыныс белгілік кемшіліктер бар. Себеп-салдарлық байланыстар мен қыстырма сөздердің тыныс белгілеріне назар аудару қажет. Академиялық стильді нығайту үшін ауызекі сөз тіркестерін алмастырған жөн.";
+          scores = { content: 11, logic: 10, argument: 9, structure: 11, style: 6, ortho: 8, punct: 5, literacy: 7, total: 67 };
+        } else if (state.lang === "ru") {
+          mockErrors = [
+            { id: "ru-err-1", match: "важно потому что", type: "punct", correction: "важно, потому что", explanation: "Перед союзом 'потому что' в сложноподчиненном предложении ставится запятая.", teacherTip: "Обратите внимание на знаки препинания перед подчинительными союзами причинного значения." },
+            { id: "ru-err-2", match: "будующего", type: "ortho", correction: "будущего", explanation: "Орфографическая ошибка в слове 'будущее' (в корне нет буквы 'ю').", teacherTip: "Словарное слово. Запомните написание: будущее (от быть), но следующее (от следовать)." },
+            { id: "ru-err-3", match: "По моему мнению", type: "punct", correction: "По моему мнению,", explanation: "Вводное сочетание слов 'по моему мнению' всегда выделяется запятой.", teacherTip: "Всегда выделяйте вводные слова и словосочетания запятыми для структурирования мыслей." },
+            { id: "ru-err-4", match: "учится", type: "ortho", correction: "учиться", explanation: "В вопросе глагола 'что делать?' пишется мягкий знак (-ться).", teacherTip: "Задавайте проверочный вопрос к глаголу. Если в вопросе есть мягкий знак, он пишется и в глаголе." }
+          ];
+          feedbackText = "В эссе присутствуют явные орфографические и пунктуационные погрешности. Требуется повторение правил знаков препинания при вводных конструкциях.";
+          scores = { content: 12, logic: 11, argument: 10, structure: 12, style: 7, ortho: 7, punct: 6, literacy: 8, total: 75 };
+        } else {
+          mockErrors = [
+            { id: "en-err-1", match: "education is very important because", type: "punct", correction: "education is very important, because", explanation: "In academic writing, a comma before 'because' is optional but helpful when introducing non-restrictive adverbial clauses or long statements.", teacherTip: "Consider commas in complex sentences to organize reading pacing." },
+            { id: "en-err-2", match: "In my opinion every", type: "punct", correction: "In my opinion, every", explanation: "Introductory phrases like 'In my opinion' should be followed by a comma.", teacherTip: "Always put a comma after introductory prepositional or adverbial phrases." },
+            { id: "en-err-3", match: "waist their time", type: "ortho", correction: "waste their time", explanation: "Confusing the homophones 'waist' (part of body) and 'waste' (to squander).", teacherTip: "Double check your spelling of homophones in academic assignments." },
+            { id: "en-err-4", match: "it will be better", type: "style", correction: "it would be better", explanation: "Using conditional tense 'would' is more academically formal and appropriate for hypothetical situations than 'will'.", teacherTip: "Adopt tentative (hedging) language for analytical style." }
+          ];
+          feedbackText = "The essay contains several homophonic spelling issues and missing commas after introductory phrases. Applying formal academic writing constraints will elevate the tone.";
+          scores = { content: 12, logic: 11, argument: 10, structure: 12, style: 7, ortho: 8, punct: 7, literacy: 8, total: 77 };
+        }
+        
+        state.assessment = {
+          scoreData: scores,
+          feedback: feedbackText,
+          errors: mockErrors
+        };
+      }
+
+      // Ұстаз чатының бастапқы сәлемдесуі
+      state.chatMessages = [
+        { 
+          role: "assistant", 
+          text: state.lang === "kk" 
+            ? "Сәлем, қымбатты оқушым! Мен 30 жылдық тәжірибесі бар Жазира ұстазбын. Эссеңді жақсарту жөнінде кез келген сұрағыңды қоя аласың. Мен саған бағыт-бағдар беруге әрқашан дайынмын! 🌸" 
+            : state.lang === "ru"
+              ? "Привет, дорогой ученик! Я учитель Жазира с 30-летним стажем. Ты можешь задать мне любой вопрос по улучшению эссе. Всегда рада помочь! 🌸"
+              : "Hello, dear student! I am teacher Jazira. You can ask me any question about improving your essay. I'm always ready to guide you! 🌸"
+        }
+      ];
+
+      // Синонимдерді тазалау
+      state.vocabWord = "";
+      state.vocabResult = null;
+    }
+
+    // Демонстрациялық эссе режимін ауыстыру
+    function selectSampleType(type) {
+      state.sampleType = type;
+      
+      const highBtn = document.getElementById("btn-sample-high");
+      const errBtn = document.getElementById("btn-sample-errors");
+      
+      if (type === "high") {
+        highBtn.className = "rounded-xl border p-3 text-left transition border-indigo-500 bg-indigo-50/40";
+        errBtn.className = "rounded-xl border p-3 text-left transition border-slate-200 bg-white hover:border-slate-300";
+      } else {
+        highBtn.className = "rounded-xl border p-3 text-left transition border-slate-200 bg-white hover:border-slate-300";
+        errBtn.className = "rounded-xl border p-3 text-left transition border-indigo-500 bg-indigo-50/40";
+      }
+
+      loadCurrentSample();
+      renderAll();
+    }
+
+    // Редактордың негізгі мәтінін жаңарту
+    function updateEssayText(val) {
+      state.essayText = val;
+    }
+
+    // Басқару тақтасын (Tabs) ауыстыру
+    function setActiveTab(tab) {
+      state.activeTab = tab;
+      
+      const tabs = ["analysis", "consultation", "vocabulary"];
+      tabs.forEach(t => {
+        const btn = document.getElementById(`tab-btn-${t}`);
+        const content = document.getElementById(`tab-content-${t}`);
+        if (t === tab) {
+          btn.className = "flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition bg-white text-slate-800 shadow-sm";
+          content.classList.remove("hidden");
+        } else {
+          btn.className = "flex-1 flex items-center justify-center gap-1.5 rounded-xl py-2.5 text-xs font-bold transition text-slate-600 hover:bg-slate-200/50";
+          content.classList.add("hidden");
+        }
+      });
+
+      if (tab === "consultation") {
+        scrollChatToBottom();
+      }
+      
+      lucide.createIcons();
+    }
+
+    // Редактор мен қателер картасының тақтасын ауыстыру
+    function setEditorTab(tab) {
+      state.editorTab = tab;
+      const btnWrite = document.getElementById("btn-editor-tab-write");
+      const btnInteractive = document.getElementById("btn-editor-tab-interactive");
+      const writeCont = document.getElementById("editor-container-write");
+      const interactiveCont = document.getElementById("editor-container-interactive");
+
+      if (tab === "editor") {
+        btnWrite.className = "rounded-md px-3 py-1 text-xs font-semibold transition bg-white text-slate-800 shadow-sm";
+        btnInteractive.className = "rounded-md px-3 py-1 text-xs font-semibold transition text-slate-500 hover:bg-slate-300/30";
+        writeCont.classList.remove("hidden");
+        interactiveCont.classList.add("hidden");
+      } else {
+        btnWrite.className = "rounded-md px-3 py-1 text-xs font-semibold transition text-slate-500 hover:bg-slate-300/30";
+        btnInteractive.className = "rounded-md px-3 py-1 text-xs font-semibold transition bg-white text-slate-800 shadow-sm";
+        writeCont.classList.add("hidden");
+        interactiveCont.classList.remove("hidden");
+        renderInteractiveText();
+      }
+    }
+
+    // Қателерді HTML-де бұзылмайтындай қауіпсіз ерекшелеу (Placeholder-based Highlighter)
+    function renderInteractiveText() {
+      const container = document.getElementById("editor-container-interactive");
+      if (!state.essayText) {
+        container.innerHTML = `<span class="text-slate-400 italic">Эссе мәтіні бос</span>`;
+        return;
+      }
+
+      if (!state.assessment.errors || state.assessment.errors.length === 0) {
+        container.innerHTML = state.essayText.replace(/\n/g, "<br/>");
+        return;
+      }
+
+      const sortedErrors = [...state.assessment.errors].sort((a, b) => (b.match || "").length - (a.match || "").length);
+      let html = state.essayText;
+      const placeholders = [];
+
+      sortedErrors.forEach((err, index) => {
+        if (!err.match) return;
+        const escaped = err.match.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+        const re = new RegExp(escaped, "gi");
+
+        html = html.replace(re, (matched) => {
+          const placeholder = `___HTML_ERR_PLACEHOLDER_${index}_${placeholders.length}___`;
+          const style = ERROR_STYLES[err.type] || { underline: "decoration-rose-500" };
+          placeholders.push({
+            placeholder,
+            html: `<mark data-error-id="${err.id}" onclick="openErrorDetail('${err.id}')" class="cursor-pointer rounded px-1 py-0.5 underline decoration-2 decoration-dashed ${style.underline} bg-amber-50/70 hover:bg-amber-100/90 text-slate-900 transition-all font-semibold select-none animate-pulse">${matched}</mark>`
+          });
+          return placeholder;
+        });
+      });
+
+      placeholders.forEach(({ placeholder, html: replacementHtml }) => {
+        html = html.replace(placeholder, replacementHtml);
+      });
+
+      container.innerHTML = html.replace(/\n/g, "<br/>");
+    }
+
+    // Қате туралы толық мәліметтерді модальдық терезеде ашу
+    window.openErrorDetail = function(errorId) {
+      const err = state.assessment.errors.find(x => x.id === errorId);
+      if (!err) return;
+      state.activeError = err;
+
+      const badge = document.getElementById("modal-error-badge");
+      const meta = ERROR_STYLES[err.type] || { color: "bg-rose-100 text-rose-800 border-rose-300", label: { kk: "ҚАТЕ", ru: "ОШИБКА", en: "ERROR" } };
+      badge.className = `inline-flex rounded-full border px-3 py-1 text-[10px] font-bold uppercase tracking-wider ${meta.color}`;
+      badge.textContent = meta.label[state.lang];
+
+      document.getElementById("modal-error-match").textContent = `«${err.match}»`;
+      document.getElementById("modal-error-explanation").textContent = err.explanation;
+      document.getElementById("modal-error-correction").textContent = err.correction;
+      document.getElementById("modal-error-tip").textContent = err.teacherTip;
+
+      // Түзетуді бірден қолдану батырмасының оқиғасы
+      const applyBtn = document.getElementById("btn-apply-fix");
+      applyBtn.onclick = () => {
+        applyCorrection(err);
+      };
+
+      document.getElementById("error-detail-modal").classList.remove("hidden");
+    };
+
+    function closeErrorDetailModal() {
+      document.getElementById("error-detail-modal").classList.add("hidden");
+      state.activeError = null;
+    }
+
+    // Эссе мәтініндегі қателікті мұғалім ұсынған дұрыс нұсқаға автоматты түрде ауыстыру
+    function applyCorrection(errItem) {
+      if (!errItem || !state.essayText) return;
+      
+      const index = state.essayText.indexOf(errItem.match);
+      if (index !== -1) {
+        const updatedText = 
+          state.essayText.substring(0, index) + 
+          errItem.correction + 
+          state.essayText.substring(index + errItem.match.length);
+        
+        state.essayText = updatedText;
+        document.getElementById("essay-textarea").value = updatedText;
+        
+        // Түзетілген қатені тізімнен жою
+        state.assessment.errors = state.assessment.errors.filter(e => e.id !== errItem.id);
+        
+        closeErrorDetailModal();
+        renderAll();
+        
+        // Картадағы мәтінді автоматты жаңарту
+        if (state.editorTab === "interactive") {
+          renderInteractiveText();
+        }
+      }
+    }
+
+    // Әдістемелік рубрика панелін ашу/жабу
+    function toggleRubricPanel() {
+      state.showRubricPanel = !state.showRubricPanel;
+      const panel = document.getElementById("rubrics-panel");
+      const chevron = document.getElementById("rubric-chevron");
+      
+      if (state.showRubricPanel) {
+        panel.classList.remove("hidden");
+        chevron.style.transform = "rotate(180deg)";
+      } else {
+        panel.classList.add("hidden");
+        chevron.style.transform = "rotate(0deg)";
+      }
+    }
+
+    // TTS режимін ауыстыру (AI Дауыс немесе Локалды Браузердікі)
+    function toggleTtsEnabled() {
+      state.ttsEnabled = !state.ttsEnabled;
+      const toggleBall = document.getElementById("btn-tts-toggle-ball");
+      const toggleBtn = document.getElementById("btn-tts-toggle");
+      const status = document.getElementById("tts-mode-status");
+      const voicesCont = document.getElementById("voices-select-container");
+      const t = TRANSLATIONS[state.lang];
+
+      if (state.ttsEnabled) {
+        toggleBtn.className = "relative inline-flex h-5 w-9 rounded-full border-2 border-transparent transition-colors duration-200 bg-indigo-600";
+        toggleBall.className = "inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 translate-x-4";
+        status.textContent = t.aiVoice;
+        voicesCont.classList.remove("hidden");
+      } else {
+        toggleBtn.className = "relative inline-flex h-5 w-9 rounded-full border-2 border-transparent transition-colors duration-200 bg-slate-300";
+        toggleBall.className = "inline-block h-4 w-4 transform rounded-full bg-white transition duration-200 translate-x-0";
+        status.textContent = t.demo;
+        voicesCont.classList.add("hidden");
+      }
+    }
+
+    // Дауысты таңдау
+    function selectVoice(voiceId) {
+      state.selectedVoice = voiceId;
+      renderVoices();
+    }
+
+    // Дауыстар тізімін салу
+    function renderVoices() {
+      const container = document.getElementById("voices-select-container");
+      container.innerHTML = "";
+      VOICES.forEach(v => {
+        const isSelected = state.selectedVoice === v.id;
+        const btn = document.createElement("button");
+        btn.onclick = () => selectVoice(v.id);
+        btn.className = `rounded-xl border p-2 text-left text-[10px] font-semibold transition ${
+          isSelected ? "border-indigo-400 bg-white text-indigo-950 shadow-sm" : "border-slate-200 bg-transparent text-slate-600 hover:border-slate-300"
+        }`;
+        btn.textContent = v.label;
+        container.appendChild(btn);
+      });
+    }
+
+    // Кері байланысты дыбыстау оқиғасы
+    async function speakFeedbackText() {
+      const audio = document.getElementById("tts-audio");
+      if (state.audioPlaying) {
+        if (!state.ttsEnabled) {
+          window.speechSynthesis.cancel();
+        } else {
+          audio.pause();
+        }
+        state.audioPlaying = false;
+        translateUI();
+        return;
+      }
+
+      state.ttsLoading = true;
+      translateUI();
+
+      const textToSpeak = `${state.assessment.feedback} Score: ${state.assessment.scoreData?.total || 0} out of 100.`;
+
+      // Браузерлік дыбыстау
+      if (!state.ttsEnabled) {
+        if ("speechSynthesis" in window) {
+          window.speechSynthesis.cancel();
+          const utter = new SpeechSynthesisUtterance(textToSpeak);
+          utter.lang = state.lang === "kk" ? "kk-KZ" : state.lang === "ru" ? "ru-RU" : "en-US";
+          utter.rate = 1.0;
+          utter.onend = () => {
+            state.ttsLoading = false;
+            state.audioPlaying = false;
+            translateUI();
+          };
+          utter.onerror = () => {
+            state.ttsLoading = false;
+            state.audioPlaying = false;
+            translateUI();
+          };
+          window.speechSynthesis.speak(utter);
+          state.audioPlaying = true;
+          state.ttsLoading = false;
+          translateUI();
+        } else {
+          showError("Speech synthesis is not supported on this browser.");
+          state.ttsLoading = false;
+          translateUI();
+        }
+        return;
+      }
+
+      // Gemini TTS Сұранысы
+      const apiKey = "";
+      try {
+        const response = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-tts?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ parts: [{ text: textToSpeak }] }],
+              generationConfig: {
+                responseModalities: ["AUDIO"],
+                speechConfig: {
+                  voiceConfig: {
+                    prebuiltVoiceConfig: {
+                      voiceName: state.selectedVoice
+                    }
+                  }
+                }
+              }
+            })
+          }
+        );
+
+        const result = await response.json();
+        const pcmBase64 = result.candidates?.[0]?.content?.parts?.[0]?.inlineData?.data;
+        if (!pcmBase64) throw new Error("Audio data not found.");
+
+        const rawBinary = atob(pcmBase64);
+        const arrayBuffer = new ArrayBuffer(rawBinary.length);
+        const uint8 = new Uint8Array(arrayBuffer);
+        for (let i = 0; i < rawBinary.length; i++) {
+          uint8[i] = rawBinary.charCodeAt(i);
+        }
+
+        const wavBlob = pcm16ToWavBlob(arrayBuffer, 24000);
+        const wavUrl = URL.createObjectURL(wavBlob);
+        
+        audio.src = wavUrl;
+        audio.play();
+        state.audioPlaying = true;
+      } catch (err) {
+        console.error(err);
+        showError("Voice generation failed. Switched to fallback local TTS mode.");
+      } finally {
+        state.ttsLoading = false;
+        translateUI();
+      }
+    }
+
+    // Аудио аяқталғандағы оқиғаны тыңдау
+    document.getElementById("tts-audio").addEventListener("ended", () => {
+      state.audioPlaying = false;
+      translateUI();
+    });
+
+    // Қателік туралы баннерді көрсету
+    function showError(msg) {
+      state.errorMessage = msg;
+      const banner = document.getElementById("error-banner");
+      const text = document.getElementById("error-banner-text");
+      text.textContent = msg;
+      banner.classList.remove("hidden");
+    }
+
+    function hideErrorBanner() {
+      document.getElementById("error-banner").classList.add("hidden");
+      state.errorMessage = "";
+    }
+
+    // Файлды жүктеу түймесін іске қосу
+    function triggerFileUpload() {
+      document.getElementById("file-input").click();
+    }
+
+    // Жүктелген файлды оқу (TXT, DOCX, IMAGE)
+    async function handleFileUpload(e) {
+      const file = e.target.files?.[0];
+      if (!file) return;
+
+      const fileName = file.name;
+      const fileType = file.type;
+      const fileExt = fileName.split('.').pop().toLowerCase();
+      
+      const isWord = fileExt === 'docx' || fileType === "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+      const isLegacyWord = fileExt === 'doc';
+      const isText = fileExt === 'txt' || fileType === "text/plain";
+      const isImage = fileType.startsWith('image/');
+
+      hideErrorBanner();
+      
+      state.assessment = {
+        scoreData: { content: 0, logic: 0, argument: 0, structure: 0, style: 0, ortho: 0, punct: 0, literacy: 0, total: 0 },
+        feedback: state.lang === "kk" ? "Құжат жүктелді. Нәтижелерді көру үшін «AI Талдауын Жүгірту» батырмасын басыңыз." : "Document loaded. Click Analyze to see results.",
+        errors: []
+      };
+      setEditorTab("editor");
+
+      if (isLegacyWord) {
+        showError(state.lang === "kk" ? "Ескі .doc форматы қолдау таппайды. Құжатты .docx форматында сақтап, қайта жүктеңіз." : "Legacy .doc format is not supported. Please save as .docx and try again.");
+        e.target.value = '';
+        return;
+      }
+
+      if (isImage) {
+        const reader = new FileReader();
+        reader.onload = () => {
+          state.selectedImage = reader.result; 
+          state.imageName = fileName;
+          state.essayTitle = "Қолжазба: " + fileName;
+          state.essayText = state.lang === "kk" ? "[Сурет жүктелді. AI талдау басталғанда мәтін оқылады...]" : "[Image loaded. OCR pending...]";
+          
+          document.getElementById("essay-title-input").value = state.essayTitle;
+          document.getElementById("essay-textarea").value = state.essayText;
+          renderAll();
+        };
+        reader.readAsDataURL(file);
+      } else if (isWord) {
+        state.essayTitle = fileName.replace(/\.docx$/i, "");
+        state.essayText = state.lang === "kk" ? "Word құжаты оқылуда... (Күте тұрыңыз)" : "Reading Word document...";
+        document.getElementById("essay-title-input").value = state.essayTitle;
+        document.getElementById("essay-textarea").value = state.essayText;
+        renderAll();
+
+        try {
+          const arrayBuffer = await new Promise((resolve, reject) => {
+            const reader = new FileReader();
+            reader.onload = (e) => resolve(e.target.result);
+            reader.onerror = () => reject(new Error("Файлды оқу қатесі"));
+            reader.readAsArrayBuffer(file);
+          });
+
+          const result = await window.mammoth.extractRawText({ arrayBuffer });
+          const extractedText = result.value.trim();
+          
+          if (!extractedText) {
+            showError(state.lang === "kk" ? "Word құжатының іші бос немесе тек суреттерден тұрады." : "Word document is empty or contains only images.");
+            state.essayText = "";
+          } else {
+            state.essayText = extractedText;
+          }
+        } catch (err) {
+          console.error("Word processing error:", err);
+          showError(state.lang === "kk" ? "Word құжатын оқу мүмкін болмады. Эссе мәтінін файлдан тікелей көшіріп (Copy-Paste) редакторға қоя салыңыз." : "Error reading Word document. Please Copy-Paste the text directly.");
+          state.essayText = "";
+        }
+        
+        state.selectedImage = null;
+        state.imageName = "";
+        document.getElementById("essay-textarea").value = state.essayText;
+        renderAll();
+      } else if (isText) {
+        const reader = new FileReader();
+        reader.onload = (event) => {
+          state.essayTitle = fileName.replace(/\.txt$/i, "") || "TXT Essay";
+          state.essayText = event.target.result;
+          state.selectedImage = null;
+          state.imageName = "";
+          
+          document.getElementById("essay-title-input").value = state.essayTitle;
+          document.getElementById("essay-textarea").value = state.essayText;
+          renderAll();
+        };
+        reader.readAsText(file);
+      } else {
+        showError(state.lang === "kk" ? "Қолдау көрсетілмейтін формат. Тек .TXT, .DOCX немесе Сурет жүктеңіз." : "Unsupported file format.");
+      }
+      
+      e.target.value = '';
+    }
+
+    function clearSelectedImage() {
+      state.selectedImage = null;
+      state.imageName = "";
+      state.essayText = "";
+      document.getElementById("essay-textarea").value = "";
+      renderAll();
+    }
+
+    // Gemini API арқылы эссені толық бағалау және критерий бойынша талдау жүргізу
+    async function runAIAnalysis() {
+      state.analyzing = true;
+      hideErrorBanner();
+      translateUI();
+      
+      const apiKey = ""; 
+
+      const systemPrompt = `You are "Teacher Jazira" (Ұстаз Жазира), a highly respected native language expert and academic evaluator with over 30 years of professional teaching experience, deeply aligned with Nazarbayev Intellectual Schools (NIS) evaluation system.
+Your evaluation style is rigorous, exceptionally precise, aligned with rubrics, and pedagogically constructive.
+Analyze the essay text according to the selected language of the application: "${state.lang.toUpperCase()}".
+
+You must grade the essay across exactly 8 criteria (total 100 max, conforming to NIS guidelines):
+1. Content (content) - max 15 points.
+2. Logic (logic) - max 15 points.
+3. Argument (argument) - max 15 points.
+4. Structure (structure) - max 15 points.
+5. Style (style) - max 10 points.
+6. Orthography (ortho) - max 10 points.
+7. Punctuation (punct) - max 10 points.
+8. Literacy (literacy) - max 10 points.
+
+Instructions for Handwriting/OCR:
+If an image is uploaded in the request, first perform OCR on the handwritten page, transcribe it exactly into the 'transcribedText' field in the language of the handwriting, and then run your detailed NIS evaluation on that transcribed text.
+If no image is provided, transcription is not required (leave 'transcribedText' as null).
+
+CRITICAL INSTRUCTION: You MUST return ONLY a strictly valid JSON object. Do not include introductory text, markdown formatting (no \`\`\`json), or conversational filler. The structure must be EXACTLY:
+{
+  "transcribedText": "Transcribed handwritten text if image was provided, otherwise null",
+  "scoreData": {
+    "content": number,
+    "logic": number,
+    "argument": number,
+    "structure": number,
+    "style": number,
+    "ortho": number,
+    "punct": number,
+    "literacy": number,
+    "total": sum of the 8 criteria (100 max)
+  },
+  "feedback": "Deeply wise, professional, and detailed NIS formative feedback addressing strengths and areas of improvement in the target language (${state.lang}) with the authority and encouragement of a 30-year expert",
+  "errors": [
+    {
+      "match": "exact word or text fragment in the essay with error (MUST be identical character match)",
+      "type": "style" | "ortho" | "punct" | "logic",
+      "correction": "corrected text",
+      "explanation": "concise grammatical explanation in ${state.lang}",
+      "teacherTip": "constructive, encouraging tip based on NIS academic guidelines in ${state.lang}"
+    }
+  ]
+}`;
+
+      const userQuery = `Target Essay Language: ${state.lang.toUpperCase()}
+Title: "${state.essayTitle}"
+Original Text: "${state.essayText}"`;
+
+      let payloadParts = [];
+      if (state.selectedImage) {
+        const base64Data = state.selectedImage.split(",")[1];
+        const mimeType = state.selectedImage.split(";")[0].split(":")[1];
+        payloadParts.push({
+          inlineData: {
+            mimeType: mimeType,
+            data: base64Data
+          }
+        });
+      }
+      payloadParts.push({ text: userQuery });
+
+      try {
+        const response = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: payloadParts }],
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                  type: "OBJECT",
+                  properties: {
+                    transcribedText: { type: "STRING" },
+                    scoreData: {
+                      type: "OBJECT",
+                      properties: {
+                        content: { type: "INTEGER" },
+                        logic: { type: "INTEGER" },
+                        argument: { type: "INTEGER" },
+                        structure: { type: "INTEGER" },
+                        style: { type: "INTEGER" },
+                        ortho: { type: "INTEGER" },
+                        punct: { type: "INTEGER" },
+                        literacy: { type: "INTEGER" },
+                        total: { type: "INTEGER" }
+                      },
+                      required: ["content", "logic", "argument", "structure", "style", "ortho", "punct", "literacy", "total"]
+                    },
+                    feedback: { type: "STRING" },
+                    errors: {
+                      type: "ARRAY",
+                      items: {
+                        type: "OBJECT",
+                        properties: {
+                          match: { type: "STRING" },
+                          type: { type: "STRING" },
+                          correction: { type: "STRING" },
+                          explanation: { type: "STRING" },
+                          teacherTip: { type: "STRING" }
+                        },
+                        required: ["match", "type", "correction", "explanation", "teacherTip"]
+                      }
+                    }
+                  },
+                  required: ["scoreData", "feedback", "errors"]
+                }
+              }
+            })
+          }
+        );
+
+        const result = await response.json();
+        let rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!rawText) throw new Error("No response from AI Model.");
+
+        const match = rawText.match(/\{[\s\S]*\}/);
+        if (match) {
+          rawText = match[0];
+        } else {
+          rawText = rawText.replace(/```json/gi, "").replace(/```/gi, "").trim();
+        }
+
+        const parsed = JSON.parse(rawText);
+        
+        if (parsed.transcribedText) {
+          state.essayText = parsed.transcribedText;
+          document.getElementById("essay-textarea").value = state.essayText;
+        }
+
+        const processedErrors = (parsed.errors || []).map((err, i) => ({
+          ...err,
+          id: `ai-err-${i}-${Date.now()}`
+        }));
+
+        state.assessment = {
+          scoreData: parsed.scoreData,
+          feedback: parsed.feedback,
+          errors: processedErrors
+        };
+
+        setEditorTab("interactive");
+      } catch (err) {
+        console.error(err);
+        showError(state.lang === "kk" ? "Талдау жасау сәтсіз аяқталды. Мәтіннің дұрыстығын тексеріңіз немесе қайта жіберіңіз." : "Analysis failed. Please check your text format and try again.");
+      } finally {
+        state.analyzing = false;
+        translateUI();
+        renderAll();
+      }
+    }
+
+    // Ұстазбен чат хабарламасын жіберу
+    async function handleChatSubmit(e) {
+      e.preventDefault();
+      const input = document.getElementById("chat-input-field");
+      const userMsg = input.value.trim();
+      if (!userMsg || state.sendingChat) return;
+
+      sendChatMessage(userMsg);
+    }
+
+    async function sendChatMessage(userMsg) {
+      state.chatMessages.push({ role: "user", text: userMsg });
+      state.sendingChat = true;
+      document.getElementById("chat-input-field").value = "";
+      renderChat();
+
+      const apiKey = "";
+      const systemPrompt = `You are "Teacher Jazira" (Ұстаз Жазира), a highly respected native language expert and academic evaluator with over 30 years of professional teaching experience, deeply aligned with Nazarbayev Intellectual Schools (NIS / НЗМ) criteria-based evaluation system.
+You are advising the student on their essay written in ${state.lang.toUpperCase()}.
+Essay Title: "${state.essayTitle}"
+Current Essay Text: "${state.essayText}"
+Current Score: ${state.assessment.scoreData?.total || 0}/100.
+Always respond warmly as a wise schoolteacher, using terms of endearment like "айналайын" or "қымбатты оқушым". Keep responses helpful, concise, and focused on pedagogical improvements in ${state.lang}.`;
+
+      try {
+        const response = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: [{ text: userMsg }] }],
+              systemInstruction: { parts: [{ text: systemPrompt }] }
+            })
+          }
+        );
+
+        const result = await response.json();
+        const botResponse = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (!botResponse) throw new Error();
+
+        state.chatMessages.push({ role: "assistant", text: botResponse });
+      } catch (err) {
+        state.chatMessages.push({ 
+          role: "assistant", 
+          text: state.lang === "kk" ? "Кешіріңіз, айналайын, желіде ақау болып тұр. Қайталап сұрашы." : "Sorry, dear student, there was a connection issue. Please ask again." 
+        });
+      } finally {
+        state.sendingChat = false;
+        renderChat();
+      }
+    }
+
+    // Синонимдер сөздігін іздеу
+    async function handleVocabSearch(e) {
+      e.preventDefault();
+      const input = document.getElementById("vocab-input-field");
+      const word = input.value.trim();
+      if (!word || state.searchingVocab) return;
+
+      state.searchingVocab = true;
+      state.vocabResult = null;
+      renderVocab();
+
+      const apiKey = "";
+      const systemPrompt = `You are an expert lexicographer for Kazakh, Russian, and English. Given a word, provide 5 closely related literary synonyms, context meanings, and rich usage suggestions in the language "${state.lang.toUpperCase()}".
+Return a JSON conforming to:
+{
+  "synonyms": [
+    {"word": "synonym word", "meaning": "nuance and tone description", "example": "full usage example sentence in essay"}
+  ],
+  "usageTip": "teacher tip for stylistic improvement"
+}`;
+
+      try {
+        const response = await fetchWithRetry(
+          `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`,
+          {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              contents: [{ role: "user", parts: [{ text: `Word to analyze: "${word}"` }] }],
+              systemInstruction: { parts: [{ text: systemPrompt }] },
+              generationConfig: {
+                responseMimeType: "application/json",
+                responseSchema: {
+                  type: "OBJECT",
+                  properties: {
+                    synonyms: {
+                      type: "ARRAY",
+                      items: {
+                        type: "OBJECT",
+                        properties: {
+                          word: { type: "STRING" },
+                          meaning: { type: "STRING" },
+                          example: { type: "STRING" }
+                        },
+                        required: ["word", "meaning", "example"]
+                      }
+                    },
+                    usageTip: { type: "STRING" }
+                  },
+                  required: ["synonyms", "usageTip"]
+                }
+              }
+            })
+          }
+        );
+
+        const result = await response.json();
+        let rawText = result.candidates?.[0]?.content?.parts?.[0]?.text;
+        if (rawText) {
+          rawText = rawText.replace(/```json/gi, "").replace(/```/gi, "").trim();
+          state.vocabResult = JSON.parse(rawText);
+        }
+      } catch (err) {
+        showError("Synonym booster analysis failed.");
+      } finally {
+        state.searchingVocab = false;
+        renderVocab();
+      }
+    }
+
+    // Деректерді рендерингтеу функциялары
+    function renderAll() {
+      // Тақырыптарды жаңарту
+      document.getElementById("essay-title-subtitle").textContent = state.essayTitle || "Тақырыпсыз";
+      document.getElementById("essay-title-input").value = state.essayTitle;
+      document.getElementById("essay-textarea").value = state.essayText;
+
+      // Ортақ ұпайлар
+      document.getElementById("overall-score-val").textContent = `${state.assessment.scoreData?.total || 0} / 100`;
+      document.getElementById("error-count-val").textContent = state.assessment.errors ? state.assessment.errors.length : 0;
+
+      // OCR сурет баннері
+      const ocrBanner = document.getElementById("image-ocr-note-banner");
+      if (state.selectedImage) {
+        document.getElementById("lbl-image-selected").textContent = `${TRANSLATIONS[state.lang].imageSelected} ${state.imageName}`;
+        ocrBanner.classList.remove("hidden");
+      } else {
+        ocrBanner.classList.add("hidden");
+      }
+
+      // Ерекшеленген мәтін
+      if (state.editorTab === "interactive") {
+        renderInteractiveText();
+      }
+
+      renderStatistics();
+      renderCriteriaBars();
+      renderRubricsList();
+      renderFeedbackText();
+      renderVoices();
+      renderChat();
+      renderVocab();
+      
+      lucide.createIcons();
+    }
+
+    // Статистикалық карточкаларды салу
+    function renderStatistics() {
+      const container = document.getElementById("stats-grid-container");
+      container.innerHTML = "";
+      Object.entries(ERROR_STYLES).map(([type, meta]) => {
+        const count = (state.assessment.errors || []).filter((e) => e.type === type).length;
+        
+        const card = document.createElement("div");
+        card.className = "rounded-2xl border border-slate-100 bg-slate-50/50 p-4 animate-fade-in";
+        card.innerHTML = `
+          <div class="flex items-center gap-1.5 text-xs font-bold text-slate-600">
+            <span class="h-2.5 w-2.5 rounded-full ${meta.dot}"></span>
+            ${meta.label[state.lang]}
+          </div>
+          <div class="mt-1 text-2xl font-black text-slate-800">${count}</div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    // Бағалау прогресс барларын салу
+    function renderCriteriaBars() {
+      const container = document.getElementById("criteria-bars-container");
+      container.innerHTML = "";
+      CRITERIA.forEach(c => {
+        const scoreVal = state.assessment.scoreData?.[c.key] !== undefined ? state.assessment.scoreData[c.key] : 0;
+        const pct = (scoreVal / c.max) * 100;
+        
+        const div = document.createElement("div");
+        div.className = "space-y-1";
+        div.innerHTML = `
+          <div class="flex items-center justify-between text-xs font-semibold">
+            <span class="text-slate-700">${c.label[state.lang]}</span>
+            <span class="text-slate-500 font-bold">${scoreVal} / ${c.max}</span>
+          </div>
+          <div class="h-2 rounded-full bg-slate-100 overflow-hidden">
+            <div style="width: ${pct}%" class="h-full bg-gradient-to-r from-emerald-500 to-sky-400 rounded-full transition-all duration-500"></div>
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Рубрикалар тізімін салу
+    function renderRubricsList() {
+      const container = document.getElementById("rubrics-panel");
+      container.innerHTML = "";
+      RUBRICS_DATA[state.lang]?.forEach((rub, idx) => {
+        const div = document.createElement("div");
+        div.className = "rounded-xl border border-slate-100 bg-slate-50/50 p-3 text-xs leading-relaxed";
+        div.innerHTML = `
+          <div class="flex items-center justify-between font-bold text-indigo-950 mb-1">
+            <span>${rub.title}</span>
+            <span class="text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-full text-[10px]">
+              ${rub.max}
+            </span>
+          </div>
+          <p class="text-slate-600">${rub.desc}</p>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    // Кері байланыс мәтінін салу
+    function renderFeedbackText() {
+      const el = document.getElementById("teacher-feedback-text");
+      el.textContent = state.assessment.feedback || (state.lang === "kk" ? "Эссе мәтінін жазып, AI талдауын жіберіңіз немесе үлгіні таңдаңыз." : "Analyze text to see details.");
+    }
+
+    // Консультация чатын жаңарту
+    function renderChat() {
+      const container = document.getElementById("chat-messages-container");
+      container.innerHTML = "";
+      state.chatMessages.forEach(msg => {
+        const isUser = msg.role === "user";
+        const div = document.createElement("div");
+        div.className = `flex ${isUser ? "justify-end" : "justify-start"}`;
+        div.innerHTML = `
+          <div class="max-w-[85%] rounded-2xl px-3.5 py-2.5 leading-relaxed ${
+            isUser ? "bg-indigo-600 text-white rounded-br-none shadow-sm" : "bg-slate-100 text-slate-800 rounded-bl-none border border-slate-200"
+          }">
+            ${msg.text}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+
+      if (state.sendingChat) {
+        const div = document.createElement("div");
+        div.className = "flex justify-start";
+        div.innerHTML = `
+          <div class="bg-slate-100 border border-slate-200 rounded-2xl rounded-bl-none px-4 py-2.5 flex items-center gap-2">
+            <i data-lucide="loader-2" class="h-3.5 w-3.5 animate-spin text-slate-500"></i>
+            <span class="text-slate-400">Ұстаз жауап жазуда...</span>
+          </div>
+        `;
+        container.appendChild(div);
+      }
+
+      scrollChatToBottom();
+      renderQuickQuestions();
+      lucide.createIcons();
+    }
+
+    function scrollChatToBottom() {
+      const container = document.getElementById("chat-messages-container");
+      container.scrollTop = container.scrollHeight;
+    }
+
+    // Дайын сұрақ чиптерін салу
+    function renderQuickQuestions() {
+      const container = document.getElementById("quick-qs-container");
+      container.innerHTML = "";
+      
+      const list = [
+        { label: TRANSLATIONS[state.lang].q1, text: state.lang === "kk" ? "Эссенің құрылымы мен абзацтарға бөлінуін қалай жақсартуға болады? Нақты кеңес беріңізші." : state.lang === "ru" ? "Как улучшить структуру эссе и деление на абзацы? Дайте конкретный совет." : "How can I improve the essay structure and paragraph division?" },
+        { label: TRANSLATIONS[state.lang].q2, text: state.lang === "kk" ? "Осы эсседегі дәлелдемелер мен аргументтерді қалай күшейте аламын? Мысал келтіріңізші." : state.lang === "ru" ? "Как я могу усилить аргументацию и доказательства в этом эссе? Приведите пример." : "How can I strengthen arguments and evidence in this essay?" },
+        { label: TRANSLATIONS[state.lang].q3, text: state.lang === "kk" ? "Эссенің стилін неғұрлым академиялық және ресми қылу үшін не істеу керек?" : state.lang === "ru" ? "Что нужно сделать, чтобы стиль эссе стал более академическим и официальным?" : "What should I do to make the essay style more academic and formal?" }
+      ];
+
+      list.forEach(q => {
+        const btn = document.createElement("button");
+        btn.type = "button";
+        btn.onclick = () => sendChatMessage(q.text);
+        btn.disabled = state.sendingChat;
+        btn.className = "text-left bg-slate-50 hover:bg-indigo-50/50 border border-slate-200 rounded-lg p-2 text-[10px] font-medium text-slate-700 hover:text-indigo-950 transition";
+        btn.textContent = q.label;
+        container.appendChild(btn);
+      });
+    }
+
+    // Синоним іздеу нәтижесін салу
+    function renderVocab() {
+      const container = document.getElementById("vocab-results-container");
+      container.innerHTML = "";
+      const t = TRANSLATIONS[state.lang];
+
+      if (state.searchingVocab) {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-slate-400 py-12 text-center">
+            <i data-lucide="loader-2" class="h-8 w-8 animate-spin text-indigo-500 mb-2"></i>
+            <p class="text-xs font-semibold">Сөздік талдау жүріп жатыр...</p>
+          </div>
+        `;
+        lucide.createIcons();
+        return;
+      }
+
+      if (state.vocabResult) {
+        const listDiv = document.createElement("div");
+        listDiv.className = "space-y-3 mt-2 text-xs";
+        
+        let itemsHtml = `<div class="space-y-2 max-h-[220px] overflow-y-auto pr-1">`;
+        state.vocabResult.synonyms.forEach(item => {
+          itemsHtml += `
+            <div class="rounded-xl border border-slate-100 bg-slate-50 p-3 animate-fade-in">
+              <div class="font-bold text-sky-800">«${item.word}»</div>
+              <div class="text-slate-600 mt-0.5">${item.meaning}</div>
+              <div class="italic text-slate-500 mt-1">Мысал: ${item.example}</div>
+            </div>
+          `;
+        });
+        itemsHtml += "</div>";
+
+        listDiv.innerHTML = `
+          ${itemsHtml}
+          <div class="rounded-xl bg-sky-50 border border-sky-100 p-3 text-sky-950 text-[11px] leading-relaxed animate-fade-in">
+            <span class="font-bold block mb-1">Ұстаздың стилистикалық кеңесі:</span>
+            <p>${state.vocabResult.usageTip}</p>
+          </div>
+        `;
+        container.appendChild(listDiv);
+      } else {
+        container.innerHTML = `
+          <div class="flex flex-col items-center justify-center text-slate-400 py-12 text-center border border-dashed border-slate-200 rounded-2xl bg-slate-50">
+            <i data-lucide="search" class="h-8 w-8 text-slate-300 mb-1"></i>
+            <p class="text-xs font-semibold">${t.noWordEntered}</p>
+            <p class="text-[10px] text-slate-400 mt-1 max-w-[200px]">${t.vocabIntro}</p>
+          </div>
+        `;
+      }
+      lucide.createIcons();
+    }
+
+    // Түзету туралы модальді жабу
+    window.closeCopyFallbackModal = function() {
+      document.getElementById("copy-fallback-modal").classList.add("hidden");
+    }
+
+    // Аралық сақтағышқа көшіру әрекеті (iFrame шектеулері бар қауіпсіз нұсқа)
+    function copyFeedback() {
+      const payload = reportText({
+        essayTitle: state.essayTitle,
+        essayText: state.essayText,
+        scoreData: state.assessment.scoreData,
+        errors: state.assessment.errors,
+        note: state.assessment.feedback,
+        lang: state.lang
+      });
+      
+      try {
+        const textArea = document.createElement("textarea");
+        textArea.value = payload;
+        textArea.style.position = "fixed";
+        textArea.style.top = "0";
+        textArea.style.left = "0";
+        textArea.style.opacity = "0";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+        
+        const successful = document.execCommand("copy");
+        document.body.removeChild(textArea);
+        
+        if (successful) {
+          state.copied = true;
+          translateUI();
+          setTimeout(() => {
+            state.copied = false;
+            translateUI();
+          }, 2000);
+        } else {
+          throw new Error("Copy error");
+        }
+      } catch (err) {
+        console.error("Copy fallback triggered:", err);
+        document.getElementById("copy-fallback-textarea").value = payload;
+        document.getElementById("copy-fallback-modal").classList.remove("hidden");
+      }
+    }
+
+    // Жүктеуге арналған файл есебін құрастыру
+    function downloadReport() {
+      const payload = reportText({
+        essayTitle: state.essayTitle,
+        essayText: state.essayText,
+        scoreData: state.assessment.scoreData,
+        errors: state.assessment.errors,
+        note: state.assessment.feedback,
+        lang: state.lang
+      });
+      const filename = `${state.essayTitle.replace(/[^\w\d\-ӘәҒғҚқҢңӨөҰұҮүІі ]+/g, "").trim() || "essay"}-report.txt`;
+      downloadFile(filename, payload);
+    }
+  </script>
+</body>
+</html>
